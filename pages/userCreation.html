@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- <% include head %> -->
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/deafult.css">
+    
+    <link rel="stylesheet" href="/css/login.css">
+    <title>DFMB - Oprettelsen af bruger</title>
+  </head>
+
+  <body>
+    <header>
+        <!--  <% include header %> -->
+    </header>
+
+    <main>
+        <div class="position-absolute top-50 start-50 translate-middle ">
+            <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+                <h1>Opret bruger</h1>
+                
+                <label for="email" class="form-label">Full navn</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF4DA;</span>
+                    <input id="email" type="text" class="form-control" placeholder="Full navn" aria-describedby="Insæt email for at logge ind" >
+                </div>
+
+                <label for="email" class="form-label">Email address</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF32C;</span>
+                    <input id="email" type="text" class="form-control" placeholder="Email" aria-describedby="Insæt email for at logge ind" >
+                </div>
+
+                <label for="password" class="form-label">Adgangskode</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF47A;</span>
+                    <input id="password" type="password" class="form-control" placeholder="Adgangskode" aria-describedby="Insæt adgangskode for at logge ind">
+                </div>
+
+                <label for="confirmPassword" class="form-label">Bekræft adgangskode</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF47A;</span>
+                    <input id="confirmPassword" type="password" class="form-control" placeholder="Adgangskode" aria-describedby="Insæt adgangskode for at logge ind">
+                </div>
+
+
+                <button type="submit" class="btn btn-primary additional">Opret bruger</button>
+                <a id="createUser" href="#" class="btn btn-primary additional">Login</a>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <!-- <% include footer %> -->
+    </footer>
+
+  </body>
+</html>
