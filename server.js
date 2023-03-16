@@ -3,10 +3,12 @@ const mysql = require('mysql2');
 
 
 const app = express();
+
 const connection = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
-	database: 'test'
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'foodblog',
   });
 
   connection.connect(function(err) {

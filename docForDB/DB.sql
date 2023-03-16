@@ -1,0 +1,44 @@
+DROP DATABASE IF EXISTS foodblog;
+
+CREATE DATABASE foodblog;
+
+USE foodblog;
+
+CREATE TABLE users (
+id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+fullName VARCHAR(255) NOT NULL,
+userPassword varchar(255) NOT NULL,
+email VARCHAR(255) NOT NULL,
+isAdmin BOOL NOT NULL
+);
+
+CREATE TABLE recipes(
+id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+userId INT NOT NULL,
+title VARCHAR(255) NOT NULL,
+instructions LONGTEXT NOT NULL,
+personorstk VARCHAR(255) NOT NULL,
+amount INT NOT NULL,
+dateCreated DATE NOT NULL,
+FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+CREATE TABLE ingredients(
+id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+recipeId INT NOT NULL,
+ingredient VARCHAR(255) NOT NULL,
+measuringUnit VARCHAR(255) NOT NULL,
+amount INT NOT NULL,
+FOREIGN KEY (recipeId) REFERENCES recipes(id)
+);
+
+
+CREATE TABLE comments (
+id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+recipeId INT NOT NULL,
+userId INT NOT NULL,
+userComment LONGTEXT NOT NULL,
+stars INT NOT NULL,
+FOREIGN KEY (recipeId) REFERENCES recipes(id),
+FOREIGN KEY (userId) REFERENCES users(id)
+);
