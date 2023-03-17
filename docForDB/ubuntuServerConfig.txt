@@ -1,0 +1,6 @@
+const connection = mysql.createConnection({
+        host: '127.0.0.1',
+        user: 'wordpress',
+        password: '{superSecretPassword!123}',
+        database: 'testing',
+  });
