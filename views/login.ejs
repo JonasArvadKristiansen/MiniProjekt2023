@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>Document</title>
-</head>
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/login.css">
+    <title>DFMB - Log på eller tilmeld dig</title></head>
 <body>
-    login
+    <header>
+        <%- include('./ejsComponets/header') %>
+
+    </header>
+    <main>
+
+            <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+                <h1>Login</h1>
+
+                <label for="email" class="form-label">Email address</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF32C;</span>
+                    <input id="email" type="text" class="form-control" placeholder="Email" aria-describedby="Insæt email for at logge ind" >
+                </div>
+
+                <label for="password" class="form-label">Adgangskode</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">&#xF47A;</span>
+                    <input id="password" type="password" class="form-control" placeholder="Adgangskode" aria-describedby="Insæt adgangskode for at logge ind">
+                </div>
+
+                <button type="submit" class="btn btn-primary additional">Login</button>
+                <a id="createUser" href="#" class="btn btn-primary additional">Opret bruger</a>
+            </form>
+        
+    </main>
+    <footer>
+        <%- include('./ejsComponets/footer') %>
+    </footer>
 </body>
 </html>

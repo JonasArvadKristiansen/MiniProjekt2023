@@ -27,11 +27,11 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/createuser', (req, res) => {
-	res.render('createuser');
+	res.render('createUser');
 });
 
 app.get('/createrecipes', (req, res) => {
-	res.render('createrecipes');
+	res.render('createRecipes');
 });
 
 app.get('/', (req, res) => {

@@ -1,15 +1,16 @@
-main form {
-    background-color: #fff;
-    padding: 10%;
-    border-radius: 2%;
-    margin: -30%;
-}
 
 main .additional {
     width: 100%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
     font-weight: bold;
 }
+
+main form {
+    margin: auto;
+    width: 30%;
+    margin-top: 3%;
+}
+
 
 main #createUser {
     background-color: rgb(74, 185, 74);
