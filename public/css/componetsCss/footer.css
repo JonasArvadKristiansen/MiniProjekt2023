@@ -1,0 +1,22 @@
+footer #footer-column {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 1%;
+}
+
+footer ul {
+    padding: 0%;
+}
+
+footer a {
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+}
+
+footer .footer-row {
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    width: 20%;
+}

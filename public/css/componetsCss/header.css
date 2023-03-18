@@ -1,0 +1,12 @@
+header .nav-link {
+    cursor: pointer;
+}
+
+header .navbar {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+header .navbar-brand {
+    margin-right: 5%;
+}

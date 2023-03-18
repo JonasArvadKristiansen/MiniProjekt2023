@@ -1,0 +1,31 @@
+
+main .additional {
+    width: 100%;
+    margin-bottom: 5%;
+    font-weight: bold;
+}
+
+main form {
+    margin: auto;
+    width: 80%;
+    max-width: 500px;
+    min-width: 300px;
+    margin-top: 3%;
+}
+
+
+main #createUser {
+    background-color: rgb(74, 185, 74);
+    border-color: rgb(54, 158, 54);
+}
+main #createUser:hover {
+    background-color: rgb(54, 158, 54);
+}
+
+main h1 {
+    text-align: center;
+}
+
+main span {
+    font-family:'Bootstrap-icons';
+}

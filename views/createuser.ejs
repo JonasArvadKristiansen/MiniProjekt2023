@@ -1,12 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <!-- Henter head componet fra folderen af  -->
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/pagesCss/userRegistration.css">
+    <title>DFMB - Oprettelsen af bruger</title>
 </head>
+
 <body>
-    createuser
-</body>
+    <header>
+        <!-- Henter header componet fra folderen af  -->
+        <%- include('./ejsComponets/header') %>
+    </header>
+
+    <main>
+        <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+            <h1>Opret bruger</h1>
+            
+            <!-- Indsæt fullNavn -->       
+            <label for="fullNavn" class="form-label">Full navn</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                <input id="fullNavn" type="text" class="form-control" placeholder="Full navn" aria-describedby="Insæt full navn for at opret bruger" >
+            </div>
+
+            <!-- Indsæt email -->       
+            <label for="email" class="form-label">Email address</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope-fill"></i></span>
+                <input id="email" type="text" class="form-control" placeholder="Email" aria-describedby="Insæt email for at opret bruger" >
+            </div>
+
+            <!-- Indsæt adgangskode -->
+            <label for="password" class="form-label">Adgangskode</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+                <input id="password" type="password" class="form-control" placeholder="Adgangskode" aria-describedby="Insæt adgangskode for at opret bruger">
+            </div>
+
+            <!-- Indsæt bekræftelse adgangskode --> 
+            <label for="confirmPassword" class="form-label">Bekræft adgangskode</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+                <input id="confirmPassword" type="password" class="form-control" placeholder="Bekræft Adgangskode" aria-describedby="Insæt Bekræft adgangskode for at tjek om dit adgangskode er rigtigt">
+            </div>
+
+            <button type="submit" class="btn btn-primary additional">Opret bruger</button>
+            <a id="createUser" href="#" class="btn btn-primary additional">Login</a>
+        </form>
+    </main>
+
+    <footer>
+        <!-- Henter footer componet fra folderen af -->
+        <%- include('./ejsComponets/footer') %>
+    </footer>
+
+  </body>
 </html>
