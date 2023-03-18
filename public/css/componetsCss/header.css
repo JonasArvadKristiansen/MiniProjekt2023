@@ -2,24 +2,11 @@ header .nav-link {
     cursor: pointer;
 }
 
+header .navbar {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
 header .navbar-brand {
     margin-right: 5%;
-    margin-left: 5%;
-}
-
-header .nav-item {
-    border-left: 1px solid black;
-}
-
-header form {
-    margin-left: 10%;
-}
-
-header ul:nth-of-type(1){
-    border-right: 1px solid black;
-}
-
-header ul:nth-of-type(2){
-    margin-left: 40%;
-    border-right: 1px solid black;
 }

@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Henter head componet fra folderen af  -->
     <%- include('./ejsComponets/head') %>
     
-    <link rel="stylesheet" href="/css/login.css">
-    <title>DFMB - Log på eller tilmeld dig</title></head>
+    <link rel="stylesheet" href="/css/pagesCss/login.css">
+    <title>DFMB - Log på eller tilmeld dig</title>
+</head>
+
 <body>
     <header>
+        <!-- Henter header componet fra folderen af  -->
         <%- include('./ejsComponets/header') %>
-
     </header>
-    <main>
 
+    <main>
             <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
                 <h1>Login</h1>
 
+                <!-- Indsæt email -->
                 <label for="email" class="form-label">Email address</label>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">&#xF32C;</span>
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope-fill"></i></span>
                     <input id="email" type="text" class="form-control" placeholder="Email" aria-describedby="Insæt email for at logge ind" >
                 </div>
 
+                <!-- Indsæt adgangskode -->
                 <label for="password" class="form-label">Adgangskode</label>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">&#xF47A;</span>
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
                     <input id="password" type="password" class="form-control" placeholder="Adgangskode" aria-describedby="Insæt adgangskode for at logge ind">
                 </div>
 
                 <button type="submit" class="btn btn-primary additional">Login</button>
                 <a id="createUser" href="#" class="btn btn-primary additional">Opret bruger</a>
             </form>
-        
     </main>
+
     <footer>
+        <!-- Henter footer componet fra folderen af  -->
         <%- include('./ejsComponets/footer') %>
     </footer>
 </body>

@@ -7,6 +7,7 @@ body {
     flex-direction: column;
     min-height: 100vh; /* This is required to make the footer stick to the bottom of the viewport */
 }
+
 main {
     flex-grow: 1; /* This will push the footer to the bottom */
 }
