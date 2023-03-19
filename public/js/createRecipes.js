@@ -1,10 +1,11 @@
 // Når man ville oprette en ingrediens
-// Values form input
+
+// Værdier fra input
 const ingredientName = document.getElementById('ingredientName')
 const ingrediensMeasurements = document.getElementById('ingrediensMeasurements')
 const ingredientUnit = document.getElementById('ingredientUnit')
 
-// List and button
+// List og button
 const ingredientList = document.getElementById('ingredientList')
 const createIngredient = document.getElementById('createIncredient')
 

@@ -19,17 +19,19 @@
         <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
             <h1>Opret opskrift</h1>
             
-            <!-- Indsæt fullNavn -->       
+            <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel</label>
             <div class="input-group mb-3">
                 <input id="tittel" type="text" class="form-control" placeholder="Tittel">
             </div>
 
+            <!-- Indsæt instruktioner -->              
             <div class="mb-3">
                 <label for="instruktioner" class="form-label">Instruktioner</label>
                 <textarea class="form-control" id="instruktioner" rows="3" placeholder="Instruktioner" ></textarea>
             </div>
 
+            <!-- Indsæt ingredienser -->       
             <div class="mb-3">
                 <label class="form-label">Opret ingrediens</label>
                 <input id="ingredientName" type="text" class="form-control" placeholder="Navn på ingrediensen">
@@ -51,6 +53,7 @@
                 <div id="ingredientList"></div>
             </div>
 
+            <!-- Vælg mellem Person eller Stk -->       
             <label for="PersonOrStk" class="form-label">Person eller Stk</label>
             <div class="input-group mb-3">
                 <select id="PersonOrStk" class="form-select">
@@ -59,18 +62,19 @@
                 </select>                
             </div>
 
+            <!-- Indsæt Mængde -->       
             <label for="Measurements" class="form-label">Mængde</label>
             <div class="input-group mb-3">
                 <input id="Measurements" type="number" min="1" max="100" class="form-control" placeholder="Mængde til personer eller stk">
             </div>
 
+            <!-- Indsæt et billed -->       
             <div class="mb-3">
                 <label for="formFile" class="form-label">Vælg et billed til opskriften </label>
                 <input class="form-control" type="file" accept="image/*" id="formFile">
             </div>
 
-            <button type="submit" class="btn btn-primary additional">Opret bruger</button>
-            <a id="createUser" href="#" class="btn btn-primary additional">Login</a>
+            <button type="submit" class="btn btn-primary createRec">Opret opskrift</button>
         </form>
     </main>
 
