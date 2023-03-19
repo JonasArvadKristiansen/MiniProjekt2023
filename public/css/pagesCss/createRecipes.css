@@ -1,4 +1,3 @@
-
 main .additional {
     width: 100%;
     margin-bottom: 5%;
@@ -28,3 +27,17 @@ main h1 {
 main span {
     font-family:'Bootstrap-icons';
 }
+
+main textarea {
+    background-color: aquamarine;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    width: 100%;
+}
+
+main .no-touch {
+    background-color: #e9ecef;   
+    pointer-events: none;
+}
+
+

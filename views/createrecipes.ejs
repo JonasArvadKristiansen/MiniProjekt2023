@@ -4,8 +4,9 @@
     <!-- Henter head componet fra folderen af  -->
     <%- include('./ejsComponets/head') %>
     
-    <link rel="stylesheet" href="/css/pagesCss/login.css">
-    <title>DFMB - Log på eller tilmeld dig</title>
+    <link rel="stylesheet" href="/css/pagesCss/createRecipes.css">
+    <script src="/js/createRecipes.js" defer></script>
+    <title>DFMB - Opret opskrift</title>
 </head>
 
 <body>
@@ -15,7 +16,62 @@
     </header>
 
     <main>
-        <h1>create recipi</h1>
+        <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+            <h1>Opret opskrift</h1>
+            
+            <!-- Indsæt fullNavn -->       
+            <label for="tittel" class="form-label">Tittel</label>
+            <div class="input-group mb-3">
+                <input id="tittel" type="text" class="form-control" placeholder="Tittel">
+            </div>
+
+            <div class="mb-3">
+                <label for="instruktioner" class="form-label">Instruktioner</label>
+                <textarea class="form-control" id="instruktioner" rows="3" placeholder="Instruktioner" ></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Opret ingrediens</label>
+                <input id="ingredientName" type="text" class="form-control" placeholder="Navn på ingrediensen">
+                <div class="input-group mb-3">
+                    <input id="ingrediensMeasurements" type="number" class="form-control" placeholder="Mængde">
+                    <select id="ingredientUnit" class="form-select">
+                        <option>kilo</option>
+                        <option>gram</option>
+                        <option>liter</option>
+                        <option>milliliter</option>
+                        <option>deciliter</option>
+                        <option>teskefuld</option>
+                        <option>spiseskefuld </option>
+                    </select>          
+                    <button type="button" id="createIncredient" class="btn btn-primary additional">Tilføj ingrediensen</button>
+                </div>
+
+                <label class="form-label">Ingrediens list</label>
+                <div id="ingredientList"></div>
+            </div>
+
+            <label for="PersonOrStk" class="form-label">Person eller Stk</label>
+            <div class="input-group mb-3">
+                <select id="PersonOrStk" class="form-select">
+                    <option>Person</option>
+                    <option>Stk</option>
+                </select>                
+            </div>
+
+            <label for="Measurements" class="form-label">Mængde</label>
+            <div class="input-group mb-3">
+                <input id="Measurements" type="number" min="1" max="100" class="form-control" placeholder="Mængde til personer eller stk">
+            </div>
+
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Vælg et billed til opskriften </label>
+                <input class="form-control" type="file" accept="image/*" id="formFile">
+            </div>
+
+            <button type="submit" class="btn btn-primary additional">Opret bruger</button>
+            <a id="createUser" href="#" class="btn btn-primary additional">Login</a>
+        </form>
     </main>
 
     <footer>
@@ -24,3 +80,4 @@
     </footer>
 </body>
 </html>
+
