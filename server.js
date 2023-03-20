@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const session = require('express-session')
+const bcrypt = require("bcrypt")
 
 const app = express();
 
@@ -47,33 +48,52 @@ app.get('/', (req, res) => {
 
 app.get('/logout', (req, res) => {
 	req.session.destroy();
-	res.render('index')
+	res.render('index');
 });
 
 app.post('/loginUser',(req,res) => {
+let email = req.body.email
+let password = req.body.password
 
-	//let userData = con.query(`SELECT * FROM users WHERE email = ${req.body.email} AND WHERE userPassword = ${req.body.password}`);
-
-    if(userData){
-        session=req.session;
-        session.userid=req.body.username;
-        console.log(req.session);
-        res.render('index');
-    }
-    
-	else{
-        res.send('Invalid username or password');
-    }
+	con.query("SELECT * FROM users WHERE email = ?", email, (err, data) => {
+        if(data.length > 0)
+        {
+            let pwCheck = bcrypt.compareSync(password, data[0].userPassword)
+            
+            if(pwCheck)
+            { res.render('index'); }
+            
+            else
+            { console.log("Wrong password to use"); }
+        }
+    });
 });
 
 app.post('/createUser',(req,res) => {
-    let fullName = req.body.fullName;
-    let userPassword = req.body.userPassword;
+    let fullName = req.body.fullNavn;
+    let password = req.body.password;
     let email = req.body.email;
 
-    con.query(`SELECT * FROM users WHERE email = ${email}`)
+    con.query("SELECT * FROM users WHERE email = ?", email, (err, data) => {
+        if(data.length == 0)
+        {
+            if(password == req.body.confirmPassword)
+            {
+                let hashPassword = bcrypt.hashSync(password, 10);
 
+                con.query("INSERT INTO users (fullName, userPassword, email, isAdmin) VALUES (?, ?, ?, FALSE)", [
+                    fullName, hashPassword, email
+                ]);
+                res.render('login');
+            }
 
+            else
+                console.log("passwords do not match");
+        }
+
+        else
+            console.log("Email already in use")
+    });
 });
 
 app.post('/createRecipe',(req,res) => { 

@@ -15,10 +15,10 @@
     </header>
 
     <main>
-        <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+        <form action="/createUser" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
             <h1>Opret bruger</h1>
             
-            <!-- Indsæt fullNavn -->       
+            <!-- Indsæt fullNavn -->   
             <label for="fullNavn" class="form-label">Full navn *</label>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
@@ -47,7 +47,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary additional">Opret bruger</button>
-            <a id="createUser" href="#" class="btn btn-primary additional">Login</a>
+            <a id="createUser" href="/login" class="btn btn-primary additional">Login</a>
         </form>
     </main>
 
