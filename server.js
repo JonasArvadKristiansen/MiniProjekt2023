@@ -34,6 +34,21 @@ app.get('/createrecipes', (req, res) => {
 	res.render('createRecipes');
 });
 
+app.get('/recapie/:recapieID', (req, res) => {
+    let recapieId = req.url.split('/')[2]
+
+	connection.query('SELECT * FROM recipes WHERE id = ?', [recapieId], (err, recapiData) => {
+        if (err) {
+            console.log(err)
+        } else {
+                let userId = recapiData[0].userId
+                connection.query('SELECT fullName FROM users WHERE id= ?', [userId], (err, userData) => {
+                res.render('recipieSite', {userName:userData[0].fullName, recapiData: recapiData[0]});
+            })
+        }
+    })
+});
+
 app.get('/', (req, res) => {
 	res.render('index')
 });

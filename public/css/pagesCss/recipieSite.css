@@ -1,0 +1,79 @@
+main #opskrift {
+    margin-top: 3%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+main h1 {
+    text-align: center;
+}
+
+main div .row {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 1%;
+}
+
+main div .coulum {
+    border-top: 1px solid black;
+}
+
+main div .coulum {
+    width: 30%;
+    max-width: 500px;
+    min-width: 300px;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+main div .coulum select{
+    border: 1px solid black;    
+}
+
+main div #opskrift:nth-child(3) {
+background-color: aqua;
+}
+
+main div .row:nth-child(2) .coulum:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+main select {
+    -webkit-appearance: menulist-button;
+    appearance: menulist-button;
+}
+
+main .row:nth-child(2) .coulum:nth-child(2) {
+    display: flex;
+    justify-content: center;
+}
+
+main img {
+   /* width: 50%;
+    margin-left: 10%;
+    width: 400px; 
+    height: 250px;*/
+    width: 400px; 
+    height: 250px;
+}
+
+
+main table tr:nth-child(even) {
+    background-color: #eae9f1;
+}
+
+main table tr:nth-child(odd ) {
+    background-color: #eae9f180;
+}
+
+main table td {
+    width: 1%;
+}
+
+main table td:first-child {
+    padding-left: 2%;
+}
+
+

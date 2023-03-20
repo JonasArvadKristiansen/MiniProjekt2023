@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Henter head componet fra folderen af  -->
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/pagesCss/recipieSite.css">
+    <script src="/js/recipieSite.js" defer></script>
+    <title>DFMB - Opskrifter</title>
+</head>
+
+<body>
+    <header>
+        <!-- Henter header componet fra folderen af  -->
+        <%- include('./ejsComponets/header') %>
+    </header>
+
+    <main>
+        <div id="opskrift" class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <h1><%- recapiData.title %></h1>
+            <div class="row">
+                <div class="coulum">
+                    <p> Antal: 
+                        <select id="selectOptions"></select> 
+                        <%- recapiData.personorstk %> <!-- need backend data -->
+                    </p> 
+                    <p>Forfatter: <%- userName %> <!-- need backend data --></p>   
+                    <p>Oprettet: <%- recapiData.dateCreated %> <!-- need backend data --></p>   
+                </div>
+                <div class="coulum">
+                    <!-- need backend data -->
+                    <img src="/img/madBilled2.png" alt="">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="coulum">
+                    <h4>Ingredienser</h4> <!-- need backend data -->
+                    <table>
+                        <tr>
+                            <td>2</td>
+                            <td>dl</td>
+                            <td>mælk</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>kg</td>
+                            <td>kød</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>spke</td>
+                            <td>slat</td>
+                        </tr>
+                    </table> 
+                </div>
+                <div class="coulum">
+                    <h4>Instuktioner</h4> <!-- need backend data -->
+                    <p><%- recapiData.instructions%></p>
+                </div>
+            </div>
+
+            <div id="three">
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Henter footer componet fra folderen af  -->
+        <%- include('./ejsComponets/footer') %>
+    </footer>
+</body>
+</html>
