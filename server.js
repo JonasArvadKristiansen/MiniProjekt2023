@@ -1,26 +1,58 @@
 const express = require('express');
+require("dotenv").config();
 const mysql = require('mysql2');
 const session = require('express-session')
 const bcrypt = require("bcrypt")
-
 const app = express();
+const cors = require("cors");
+const mysqlStore = require('express-mysql-session')(session);
 
+app.use(cors());
 app.use(express.static(__dirname + '/public'));
+
 app.set('view engine', 'ejs');
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+const IN_PROD = process.env.NODE_ENV === 'production'
+const TWO_HOURS = 1000 * 60 * 60 * 2
+
 const con = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '',
-      database: 'foodblog',
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.MYSQL_DB,
   });
 
-  con.connect(function(err) {
-	if(err) throw(err);
+con.connect(function(err) {
+    if(err) throw(err);
 	console.log("Connected!");
-  });
+});
+
+const options = {
+    password: process.env.DB_PASS,
+    user: process.env.DB_USER,
+    database: process.env.MYSQL_DB,
+    host: process.env.DB_HOST,
+    createDatabaseTable: true   
+};
+
+const sessionStore = new mysqlStore(options);
+
+app.use(session({
+    name: process.env.SESS_NAME,
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    secret: process.env.SESS_SECRET,
+    cookie: {
+        httpOnly: true,
+        maxAge: TWO_HOURS,
+        sameSite: true,
+        secure: IN_PROD
+    }
+}));
 
 app.get('/showrecipes', (req, res) => {
 	res.render('usersite');
@@ -43,7 +75,7 @@ app.get('/createrecipes', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.render('index')
+    res.render('index')
 });
 
 app.get('/logout', (req, res) => {
@@ -61,7 +93,11 @@ let password = req.body.password
             let pwCheck = bcrypt.compareSync(password, data[0].userPassword)
             
             if(pwCheck)
-            { res.render('index'); }
+            {
+                console.log(data[0].id)
+                req.session.userId = data[0].id
+                res.render('index');
+            }
             
             else
             { console.log("Wrong password to use"); }
