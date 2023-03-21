@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Henter head componet fra folderen af  -->
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/pagesCss/usersite.css">
+    <title>DFMB - Brugerens side</title>
+</head>
+
+<body>
+    <header>
+        <!-- Henter header componet fra folderen af  -->
+        <%- include('./ejsComponets/header') %>
+    </header>
+
+    <main> 
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded row">
+            <h1>Hi {bruger}</h1>
+
+            <form class=" p-3 mb-5 bg-body-tertiary"> 
+                <p>Email: <%- false %> </p>
+                <label for="oldPassword">Gammel adgangskode</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+                    <input id="oldPassword" type="text" class="form-control" name="oldPassword" placeholder="Gammel adgangskode">
+                </div>
+                
+                <label for="newPassword">Ny adgangskode</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
+                    <input id="newPassword" type="text" class="form-control" name="newPassword" placeholder="Ny adgangskode">
+                </div>
+                <button type="submit" class="btn btn-primary additional additional">Opdatere password</button>
+            </form>
+        </div>
+
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded row">
+            <h1>Kontakt en moderater</h1>
+            <div>
+                <P>
+                   Hvis du har brug for at kontakte en moderater med problemer angående kommentare på dine opskrifter 
+                   der er alt for utilpassende, skal du i emailen give et link til 
+                   siden og et skærmbilled eller kopier hvad der står i kommentaren sammen med brugerens navn,
+                   så ville en moderater vudere om det er værd at fjerne fra siden.   
+                </P>
+                <p>Emailen til Kontakt en moderater nedenunder:</p>
+                <p><b>DFMB@outlook.dk</b></p>
+            </div>
+         </div>
+
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded row2">
+           <h1>Opreted opskrifter</h1>
+           <div>
+
+           </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Henter footer componet fra folderen af  -->
+        <%- include('./ejsComponets/footer') %>
+    </footer>
+</body>
+</html>

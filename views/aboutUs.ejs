@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Henter head componet fra folderen af  -->
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/pagesCss/aboutUs.css">
+    <title>DFMB - Omkrign us</title>
+</head>
+
+<body>
+    <header>
+        <!-- Henter header componet fra folderen af  -->
+        <%- include('./ejsComponets/header') %>
+    </header>
+
+    <main >
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="holder">
+            <h1>Omkrign us</h1>
+            <p id="info">Dette er et skole projekt for vores test svende prøve der er 
+                lavet af Jesper Kjærgaard og Jonas Arvad Kristain</p>
+            
+            <div class="row">
+                <div class="colum">
+                    <p><b>Jepser Kjærgaard</b></p>                    
+                    <img src="/img/Jesper.png" alt="">
+                    <a href="https://www.linkedin.com">Linkedin: <i class="bi bi-linkedin"></i></a>
+
+                </div>
+                <div class="colum">
+                    <p><b>Jonas Arvad Kristain</b></p>
+                    <img src="/img/Jonas.png" alt="">
+                    <a href="https://www.linkedin.com">Linkedin: <i class="bi bi-linkedin"></i></a>
+                </div>
+            
+            </div>
+        </div>  
+    </main>
+
+    <footer>
+        <!-- Henter footer componet fra folderen af  -->
+        <%- include('./ejsComponets/footer') %>
+    </footer>
+</body>
+</html>

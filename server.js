@@ -69,8 +69,8 @@ app.use(session({
 }));
 
 // get endpoints for ejs files
-app.get('/showrecipes', (req, res) => {
-	res.render('usersite');
+app.get('/aboutus', (req, res) => {
+	res.render('aboutUs');
 });
 
 app.get('/usersite', (req, res) => {
@@ -91,7 +91,7 @@ app.get('/createrecipes', (req, res) => {
 	res.render('createRecipes');
 });
 
-app.get('/recapie/:recapieID?', (req, res) => {
+app.get('/recapie/:recapieID', (req, res) => {
     const recapieId = req.params.recapieID
     const queryRecipe = 'recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.foodImg'
     const queryIngredients = 'ingredients.ingredient, ingredients.measuringUnit, ingredients.amount'
@@ -103,7 +103,7 @@ app.get('/recapie/:recapieID?', (req, res) => {
             INNER JOIN ingredients ON recipes.id = ingredients.recipeId
             WHERE recipes.id = ?`
 
-    connection.query(query, [recapieId], (err, data) => {
+        con.query(query, [recapieId], (err, data) => {
         if (err) {
             console.log(err)
         } else {
@@ -113,7 +113,7 @@ app.get('/recapie/:recapieID?', (req, res) => {
             INNER JOIN users ON comments.userId = users.id 
             WHERE comments.recipeId = ?`
 
-            connection.query(query, [recapieId], (err, comments) => {
+            con.query(query, [recapieId], (err, comments) => {
                 if (err) {
                     console.log(err)
                 } else {
