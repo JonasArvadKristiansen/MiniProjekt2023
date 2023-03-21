@@ -1,4 +1,4 @@
-header .nav-link {
+header .nav-link, a {
     cursor: pointer;
 }
 

@@ -1,3 +1,4 @@
+/* Designet som alt infoen kommer til at være på */
 main #opskrift {
     margin-top: 3%;
     margin-left: 5%;
@@ -8,17 +9,20 @@ main h1 {
     text-align: center;
 }
 
+
+
+/*opdelingen af informaiton med rows og colums*/
 main div .row {
     display: flex;
     justify-content: space-evenly;
     margin-bottom: 1%;
 }
 
-main div .coulum {
+main div .colum {
     border-top: 1px solid black;
 }
 
-main div .coulum {
+main div .colum {
     width: 30%;
     max-width: 500px;
     min-width: 300px;
@@ -26,40 +30,35 @@ main div .coulum {
     padding-bottom: 1%;
 }
 
-main div .coulum select{
+main div .colum select{
     border: 1px solid black;    
 }
 
-main div #opskrift:nth-child(3) {
-background-color: aqua;
-}
-
-main div .row:nth-child(2) .coulum:nth-child(1) {
+main div .row:nth-child(2) .colum:nth-child(1) {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+/*Menu dropdown in select*/
 main select {
     -webkit-appearance: menulist-button;
     appearance: menulist-button;
 }
 
-main .row:nth-child(2) .coulum:nth-child(2) {
+/*Billedet designet*/
+main .row:nth-child(2) .colum:nth-child(2) {
     display: flex;
     justify-content: center;
 }
 
 main img {
-   /* width: 50%;
-    margin-left: 10%;
-    width: 400px; 
-    height: 250px;*/
     width: 400px; 
     height: 250px;
 }
 
 
+/* Ingredienser designet*/
 main table tr:nth-child(even) {
     background-color: #eae9f1;
 }
@@ -77,3 +76,32 @@ main table td:first-child {
 }
 
 
+/* Kommentare design */
+main #writeComment select, main #stars {
+    font-family:'Bootstrap-icons';
+}
+
+main #writeComment select {
+    padding: 2%;
+}
+
+main #writeComment textarea {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    width: 100%;
+    margin-bottom: 1%;
+}
+
+main .users {
+    width: 100%;
+    margin-top: 5%;
+    display: flex;
+}
+
+main .users p {
+    margin: 0%;
+}
+
+main #stars {
+    margin-left: 3%;
+}
