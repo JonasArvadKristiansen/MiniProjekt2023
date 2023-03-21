@@ -29,7 +29,6 @@ main span {
 }
 
 main textarea {
-    background-color: aquamarine;
     overflow-wrap: break-word;
     word-wrap: break-word;
     width: 100%;
@@ -39,5 +38,3 @@ main .no-touch {
     background-color: #e9ecef;   
     pointer-events: none;
 }
-
-

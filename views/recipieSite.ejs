@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Henter head componet fra folderen af  -->
+    <%- include('./ejsComponets/head') %>
+    
+    <link rel="stylesheet" href="/css/pagesCss/recipieSite.css">
+    <script src="/js/recipieSite.js" defer></script>
+    <title>DFMB - Opskrifter</title>
+</head>
+
+<body>
+    <header>
+        <!-- Henter header componet fra folderen af  -->
+        <%- include('./ejsComponets/header') %>
+    </header>
+
+    <main>
+        <!-- Alt information i sig -->
+        <div id="opskrift" class="shadow p-3 mb-5 bg-body-tertiary rounded">
+            <h1><%- data.title %></h1>
+            
+            <!-- Rows og colum design -->
+            <!-- Row 1 -->
+            <div class="row">
+                <!-- colum 1 -->
+                <!-- Får information af mængde, forfatter og dato opretted -->
+                <div class="colum">
+                    <p> Antal: 
+                        <select id="selectOptions">
+                            <option id="deafultAmount"><%- data.totalAmount %></option>
+                        </select> 
+                        <%- data.personorstk %>
+                    </p> 
+                    <p>Forfatter: <%- data.fullName %></p>   
+                    <p>Oprettet: <%- date %></p>   
+                </div>
+
+                <!-- colum 2 -->
+                <!-- Får billedet af maden -->
+                <div class="colum">
+                    <img src="<%= data.foodImg %>">
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row">
+                <!-- colum 1 -->
+                <!-- Får listen af ingredienser -->
+                <div class="colum">
+                    <h4>Ingredienser</h4>
+                    <table id="IngrediensListe">              
+                        <% array.forEach((ing)=>{%>
+                            <tr>
+                                <td class="amount"><%= ing.amount %></td>
+                                <td><%= ing.measuringUnit %></td>
+                                <td><%= ing.ingredient %></td>
+                            </tr> 
+                        <%});%>
+                    </table> 
+                </div>
+
+                <!-- colum 2 -->
+                <!-- Får instuktionen -->
+                <div class="colum">
+                    <h4>Instuktioner</h4>
+                    <p><%- data.instructions%> </p>
+                </div>
+            </div>
+
+
+            <!-- Row 3 -->
+            <div class="row">
+                <!-- colum 1 -->
+                <!-- Tilføjer kommentar og finder dem der er opretet på siden -->
+                <div class="colum">
+                    <h4>Kommentar</h4>
+                    <form action="createComment" id="writeComment">
+                        <select name="starsSelected" >
+                            <option value="1" >&#xF586;</option>
+                            <option value="2" >&#xF586; &#xF586;</option>
+                            <option value="3" >&#xF586; &#xF586; &#xF586;</option>
+                            <option value="4" >&#xF586; &#xF586; &#xF586; &#xF586;</option>
+                            <option value="5" >&#xF586; &#xF586; &#xF586; &#xF586; &#xF586;</option>
+                        </select>
+                        <textarea class="form-control" name="kommentar" id="instruktioner" rows="3" placeholder="Skriv Kommentar" ></textarea>
+                        <button type="submit" class="btn btn-primary additional">Tilføj kommentar</button>
+                    </form>
+                    <div>
+                        <% comments.forEach((com)=>{%>
+                            <div class="users">
+                                <p><%= com.fullName %></p>
+                                <div id="stars">
+                                    <% if (com.stars == 1) { %>
+                                        <p>&#xF586;</p>
+                                    <% } else if(com.stars == 2) { %>
+                                        <p>&#xF586; &#xF586;</p>
+                                    <% } else if(com.stars == 3) {%>
+                                        <p>&#xF586; &#xF586; &#xF586;</p>
+                                    <% } else if(com.stars == 4) { %>
+                                        <p>&#xF586; &#xF586; &#xF586; &#xF586;</p>
+                                    <% } else if(com.stars == 5) { %>
+                                        <p>&#xF586; &#xF586; &#xF586; &#xF586; &#xF586;</p>
+                                    <% } else {%>
+                                        <p>Error</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <textarea class="form-control" id="instruktioner" rows="2" disabled><%= com.userComment %></textarea>
+                        <%})%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Henter footer componet fra folderen af  -->
+        <%- include('./ejsComponets/footer') %>
+    </footer>
+</body>
+</html>
