@@ -18,8 +18,9 @@ userId INT NOT NULL,
 title VARCHAR(255) NOT NULL,
 instructions LONGTEXT NOT NULL,
 personorstk VARCHAR(255) NOT NULL,
-amount INT NOT NULL,
+totalAmount INT NOT NULL,
 dateCreated DATE NOT NULL,
+img LONGTEXT NOT NULL,
 FOREIGN KEY (userId) REFERENCES users(id)
 );
 
