@@ -26,13 +26,13 @@
             <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel">
+                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
             <div class="mb-3">
                 <label for="instruktioner" class="form-label">Instruktioner *</label>
-                <textarea class="form-control" id="instruktioner" name="instruktioner" rows="3" placeholder="Instruktioner" ></textarea>
+                <textarea class="form-control" id="instruktioner" name="instruktioner" rows="3" placeholder="Instruktioner" required></textarea>
             </div>
 
             <!-- Indsæt ingredienser -->       
@@ -69,13 +69,13 @@
             <!-- Indsæt Mængde -->       
             <label for="measurements" class="form-label">Mængde *</label>
             <div class="input-group mb-3">
-                <input id="measurements" type="number" min="1" max="100" class="form-control" name="measurements" placeholder="Mængde til personer eller stk" >
+                <input id="measurements" type="number" min="1" max="100" class="form-control" name="measurements" placeholder="Mængde til personer eller stk" required >
             </div>
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
                 <label for="imgFile" class="form-label">Vælg et billed til opskriften *</label>
-                <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" >
+                <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" required>
             </div>
             <button type="submit" id="createIncredient" class="btn btn-primary additional">Opret opskrift</button>
         </form>
