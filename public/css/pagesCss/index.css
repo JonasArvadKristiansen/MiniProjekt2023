@@ -1,11 +1,12 @@
-main .row {
-    margin: auto;
-    width: 80%;
-    max-width: 500px;
-    min-width: 300px;
+main h1 {
+    text-align: center;
     margin-top: 3%;
-    display: flex;
-    flex-direction:column;
+}
+
+main a {
+    text-decoration: none;
+    color: black;
+
 }
 
 main .row2 {
@@ -13,41 +14,6 @@ main .row2 {
     margin-left: 5%;
     margin-right: 5%;
 }
-
-
-main .additional {
-    width: 100%;
-    margin-bottom: 5%;
-    font-weight: bold;
-}
-
-main h1 {
-    text-align: center;
-} 
-
-main .error {
-    color:  rgb(196, 42, 42);
-    font-size: large;
-    font-weight: bold;
-}
-
-/* bliver brugt til slet bruger knappen */
-main #deleteUser form{
-    margin: 0% !important;
-    padding: 0% !important;
-}
-
-main #deleteUser button{
-    background-color: rgb(202, 66, 66);
-    border-color: rgb(109, 24, 24);
-}
-
-main #deleteUser button:hover{
-    background-color: rgb(182, 44, 44);
-    border-color: rgb(109, 24, 24);
-}
-
-
 /* Bliver brugt til at vise opskrifterne en har lavet */
 main .row3 {
     display: flex;
