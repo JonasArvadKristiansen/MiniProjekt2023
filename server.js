@@ -72,8 +72,7 @@ app.get('/aboutus', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
         res.render('aboutUs', {auth: true});
-    }
-    else
+    } else
         res.render('aboutUs', {auth: false});
 });
 
@@ -84,9 +83,7 @@ app.get('/usersite', (req, res) => {
             
             res.render('usersite', {auth: true, data: data});
         });
-    }
-
-    else
+    } else
         res.render('index', {auth: false});
 	
 });
@@ -102,10 +99,8 @@ app.get('/createuser', (req, res) => {
 app.get('/createrecipes', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
-        res.render('createRecipes', {auth: true , error: true});    
-    }
-
-    else
+        res.render('createRecipes', {auth: true , error: false});    
+    } else
         res.render('index', {auth: false});
 });
 
@@ -122,9 +117,6 @@ app.get('/recapie/:recapieID', (req, res) => {
             WHERE recipes.id = ?`
 
         con.query(query, [recapieId], (err, data) => {
-        if (err) {
-            console.log(err)
-        } else {
             // Henter kommentarende fra databasen
             const query = `SELECT comments.userComment, comments.stars, users.fullName
             FROM comments
@@ -132,24 +124,17 @@ app.get('/recapie/:recapieID', (req, res) => {
             WHERE comments.recipeId = ?`
 
             con.query(query, [recapieId], (err, comments) => {
-                if (err) {
-                    console.log(err)
-                } else {
-                    let date = data[0].dateCreated 
-                    date = (new Date(date)).toISOString().slice(0,10)
-                    if(typeof(req.session.userId) !=  "undefined")
-                    {
-                        // Går til siden og sender data man kan bruger på frontenden
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true});
-                    }
-
-                    else
-                    {
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false});
-                    }
+                let date = data[0].dateCreated 
+                date = (new Date(date)).toISOString().slice(0,10)
+                if(typeof(req.session.userId) !=  "undefined")
+                {
+                    // Går til siden og sender data man kan bruger på frontenden
+                    res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true});
+                } else
+                {
+                    res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false});
                 }
-            })            
-        }
+            })
     })
 });
 
@@ -157,8 +142,7 @@ app.get('/', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
         res.render('index', {auth: true})
-    }
-    else
+    } else
     {
         res.render('index', {auth: false})
     }
@@ -192,9 +176,7 @@ app.post('/loginUser',(req,res) => {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
                 res.render('index', {auth: true});
-            }
-            
-            else
+            } else
             { 
                 console.log("Wrong password to use");
             }
@@ -223,13 +205,11 @@ app.post('/createUser',(req,res) => {
                     fullName, hashPassword, email
                 ]);
                 res.render('login', {auth: false, error: true});    
-            }
-            else {
+            } else {
                 console.log("passwords do not match");
                 res.render('createUser', {auth: false, error: true});
             }
-        }
-        else{
+        } else {
             console.log("Email already in use")
             res.render('createUser', {auth: false, error: true});
         }
@@ -244,9 +224,7 @@ app.post('/updateUser', (req, res) => {
     if(oldPassword == newPassword)
     {
         console.log("Something?")
-    }
-
-    else
+    } else
     {
         con.query("SELECT userPassword FROM users WHERE id = ?", req.session.userId, (err, data) => {
     
@@ -268,14 +246,12 @@ app.post('/updateUser', (req, res) => {
 	            req.session.destroy();
                 res.render('login', {auth: false, error: false});    
             });
-        }
-
-        else
+        } else
         {
             console.log("Not a match");
+            res.render('usersite', {auth: true, error: true});
         }
         }); 
-       
     }
 });
 
@@ -294,14 +270,26 @@ app.post('/deleteUser',(req, res) => {
 
 app.post('/createRecipes',(req,res) => { 
     // variables for later use
-    let userid = req.body.id
     let title = req.body.title;
-    let instructions = req.body.instructions;
-    let personorstk = req.body.personorstk;
-    let amount = req.body.amount;
+    let instructions = req.body.instruktioner;
+    let personorstk = req.body.personOrStk;
+    let amount = req.body.measurements;
     let dateCreated = Date.now();
+    let img = req.body.imgFile
+    let ingredientList = req.body.ingredientList;
 
-    con.query(``);
+    con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+    [req.session.userId, title, instructions, personorstk, amount, img]
+    ,(err, data) => {
+                ingredientList.forEach(element => {
+                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                [data.insertId, element, element, element], (err, data) => {
+                    
+                })
+            
+            
+        });
+    });
 
 });
 
@@ -313,7 +301,9 @@ app.post('/updateRecipes', (req, res) => {
     let amount = req.body.amount;
     let dateCreated = Date.now();
     
-    con.query(``);
+    con.query("", (err, data) => {
+
+    });
 
 });
 
@@ -321,8 +311,6 @@ app.post('/deleteRecipes' ,(req,res) => {
     
     // deleting from database
     con.query("", req.body , (err, data) => {
-        if(err)
-        { console.log("error: " + err) }
         res.render('usersite', {auth: true})
     });
 });

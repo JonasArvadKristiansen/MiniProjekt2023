@@ -16,17 +16,17 @@
     </header>
 
     <main>
-        <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+        <form action="/createRecipes" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
             <h1>Opret opskrift</h1>
             
             <% if (error) { %>
                 <p class="error">Der er en fejl i de indtastet oplysninger</p>
             <% } %>
 
-            <!-- Indsæt tittel -->       
-            <label for="tittel" class="form-label">Tittel *</label>
+            <!-- Indsæt tittel -->
+            <label for="tittel" class="form-label">Titel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel" required>
+                <input id="titel" type="text" name="title" class="form-control" placeholder="Titel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
@@ -77,7 +77,7 @@
                 <label for="imgFile" class="form-label">Vælg et billed til opskriften *</label>
                 <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" required>
             </div>
-            <button type="button" id="createIncredient" class="btn btn-primary additional">Opret opskrift</button>
+            <button type="submit" id="createIncredient" class="btn btn-primary additional">Opret opskrift</button>
         </form>
     </main>
 
