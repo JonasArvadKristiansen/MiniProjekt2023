@@ -37,7 +37,7 @@ const options = {
     user: process.env.DB_USER,
     database: process.env.MYSQL_DB,
     host: process.env.DB_HOST,
-    createDatabaseTable: true   
+    createDatabaseTable: false   
 };
 
 // used for uploading session data to database
@@ -55,7 +55,6 @@ app.use(session({
     store: sessionStore,
     // setting encrypting data
     secret: process.env.SESS_SECRET,
-    
     cookie: {
         //makes so javascript cant access cookie
         httpOnly: true,
@@ -70,25 +69,44 @@ app.use(session({
 
 // get endpoints for ejs files
 app.get('/aboutus', (req, res) => {
-	res.render('aboutUs');
+    if(typeof(req.session.userId) !=  "undefined")
+    {
+        res.render('aboutUs', {auth: true});
+    }
+    else
+        res.render('aboutUs', {auth: false});
 });
 
 app.get('/usersite', (req, res) => {
+    if(typeof(req.session.userId) !=  "undefined")
+    {
+        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", req.session.userId, (err, data) => {
+            
+            res.render('usersite', {auth: true, data: data});
+        });
+    }
 
-
-	res.render('usersite');
+    else
+        res.render('index', {auth: false});
+	
 });
 
 app.get('/login', (req, res) => {
-	res.render('login');
+    res.render('login', {auth: false});    
 });
 
 app.get('/createuser', (req, res) => {
-	res.render('createUser');
+    res.render('createUser', {auth: false});
 });
 
 app.get('/createrecipes', (req, res) => {
-	res.render('createRecipes');
+    if(typeof(req.session.userId) !=  "undefined")
+    {
+        res.render('createRecipes', {auth: true});    
+    }
+
+    else
+        res.render('index', {auth: false});
 });
 
 app.get('/recapie/:recapieID', (req, res) => {
@@ -119,9 +137,16 @@ app.get('/recapie/:recapieID', (req, res) => {
                 } else {
                     let date = data[0].dateCreated 
                     date = (new Date(date)).toISOString().slice(0,10)
-        
-                    // Går til siden og sender data man kan bruger på frontenden
-                    res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments});
+                    if(typeof(req.session.userId) !=  "undefined")
+                    {
+                        // Går til siden og sender data man kan bruger på frontenden
+                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true});
+                    }
+
+                    else
+                    {
+                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false});
+                    }
                 }
             })            
         }
@@ -129,7 +154,14 @@ app.get('/recapie/:recapieID', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.render('index')
+    if(typeof(req.session.userId) !=  "undefined")
+    {
+        res.render('index', {auth: true})
+    }
+    else
+    {
+        res.render('index', {auth: false})
+    }
 });
 
 app.get('/logout', (req, res) => {
@@ -137,19 +169,19 @@ app.get('/logout', (req, res) => {
     res.clearCookie(process.env.SESS_NAME)
     //removing session from database
 	req.session.destroy();
-	res.render('index');
+	res.render('index', {auth: false});
 });
 
 // endpoints for post request
 app.post('/loginUser',(req,res) => {
 
     // variables for later use
-let email = req.body.email
-let password = req.body.password
+    let email = req.body.email
+    let password = req.body.password
 
     //select * from database mathing the parameter 
 	con.query("SELECT * FROM users WHERE email = ?", email, (err, data) => {
-        if(data.length == 0)
+        if(data.length != 0)
         {   
             // tjekking if typed password match hashed password from database
             let pwCheck = bcrypt.compareSync(password, data[0].userPassword)
@@ -159,11 +191,13 @@ let password = req.body.password
             {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
-                res.render('index');
+                res.render('index', {auth: true});
             }
             
             else
-            { console.log("Wrong password to use"); }
+            { 
+                console.log("Wrong password to use");
+            }
         }
     });
 });
@@ -188,7 +222,7 @@ app.post('/createUser',(req,res) => {
                 con.query("INSERT INTO users (fullName, userPassword, email, isAdmin) VALUES (?, ?, ?, FALSE)", [
                     fullName, hashPassword, email
                 ]);
-                res.render('login');
+                res.render('login', {auth: false});
             }
 
             else
@@ -201,25 +235,58 @@ app.post('/createUser',(req,res) => {
 });
 
 app.post('/updateUser', (req, res) => {
-    // variables for later use
-    let fullName = req.body.fullName
-    let password = req.body.password
+    // variable for later use
+    let oldPassword = req.body.oldPassword;
+    let newPassword = req.body.newPassword;
 
-    // updating user in database
-    con.query("UPDATE users SET fullName = ?, userPassword = ? WHERE id = ?", 
-    [fullName, password, req.session.userId], (err, data) => {
-        if(err)
-        { console.log(err)}
-    });
+    if(oldPassword == newPassword)
+    {
+        console.log("Something?")
+    }
+
+    else
+    {
+        con.query("SELECT userPassword FROM users WHERE id = ?", req.session.userId, (err, data) => {
+    
+        let pwDBmatch = bcrypt.compareSync(oldPassword, data[0].userPassword)
+        if(pwDBmatch)
+        {
+            let newhashedpw = bcrypt.hashSync(newPassword, 10);
+            con.query("UPDATE users SET userPassword = ? WHERE id = ?", 
+                [newhashedpw, req.session.userId], (err, data) => {
+
+                if(err)
+                {
+                    console.log(err)
+                }
+
+                //removing cookie from browser
+                res.clearCookie(process.env.SESS_NAME)
+                //removing session from database
+	            req.session.destroy();
+                res.render('login', {auth: false})
+            });
+        }
+
+        else
+        {
+            console.log("Not a match");
+        }
+        }); 
+       
+    }
 });
 
 app.post('/deleteUser',(req, res) => {
-
     //deleting user from database
     con.query("DELETE FROM users WHERE id = ?", req.session.userId, (err, data) => {
         if(err)
         { console.log("error" + err) }
-        res.render('index')
+        //removing cookie from browser
+        res.clearCookie(process.env.SESS_NAME)
+        //removing session from database
+	    req.session.destroy();
+        res.render('index', {auth: false})
     });
 });
 
@@ -254,7 +321,7 @@ app.post('/deleteRecipe' ,(req,res) => {
     con.query("", req.body , (err, data) => {
         if(err)
         { console.log("error: " + err) }
-        res.render('usersite')
+        res.render('usersite', {auth: true})
     });
 });
 
@@ -270,7 +337,7 @@ app.post('/createComment' ,(req,res) => {
      [ recipeId, userid, userComment, stars ], (err, data) => {
         if(err)
         { console.log("error: " + err) }
-        res.render('usersite')
+        res.render('usersite', {auth: true})
     });
 });
 

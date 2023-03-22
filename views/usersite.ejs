@@ -16,10 +16,10 @@
 
     <main> 
         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row">
-            <h1>Hi {bruger}</h1>
+            <h1>Hi <%- data[0].fullName %></h1>
 
-            <form class=" p-3 mb-5 bg-body-tertiary"> 
-                <p>Email: <%- false %> </p>
+            <form class=" p-3 mb-5 bg-body-tertiary" action="/updateUser" method="post">
+                <p>Email: <%- data[0].email %> </p>
                 <label for="oldPassword">Gammel adgangskode</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
@@ -48,9 +48,15 @@
                 <p><b>DFMB@outlook.dk</b></p>
             </div>
          </div>
+         
+         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row">
+            <form class=" p-3 mb-5 bg-body-tertiary" action="/deleteUser" method="post"> 
+                <button type="submit" class="btn btn-primary additional additional">Slet din Konto</button>
+            </form>
+        </div>
 
         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row2">
-           <h1>Opreted opskrifter</h1>
+           <h1>Opretede opskrifter</h1>
            <div>
 
            </div>
