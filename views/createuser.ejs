@@ -17,7 +17,7 @@
     </header>
 
     <main>
-        <form action="/createUser" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
+        <form action="/createUser" id="form" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
             <h1>Opret bruger</h1>
 
             <% if (error) { %>

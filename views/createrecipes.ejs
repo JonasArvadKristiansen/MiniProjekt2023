@@ -16,7 +16,7 @@
     </header>
 
     <main>
-        <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+        <form action="/createRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
             <h1>Opret opskrift</h1>
             
             <% if (error) { %>
@@ -26,7 +26,7 @@
             <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel" required>
+                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel">
             </div>
 
             <!-- Indsæt instruktioner -->              
@@ -69,15 +69,15 @@
             <!-- Indsæt Mængde -->       
             <label for="measurements" class="form-label">Mængde *</label>
             <div class="input-group mb-3">
-                <input id="measurements" type="number" min="1" max="100" class="form-control" name="measurements" placeholder="Mængde til personer eller stk" required>
+                <input id="measurements" type="number" min="1" max="100" class="form-control" name="measurements" placeholder="Mængde til personer eller stk" >
             </div>
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
                 <label for="imgFile" class="form-label">Vælg et billed til opskriften *</label>
-                <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" required>
+                <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" >
             </div>
-            <button type="button" id="createIncredient" class="btn btn-primary additional">Opret opskrift</button>
+            <button type="submit" id="createIncredient" class="btn btn-primary additional">Opret opskrift</button>
         </form>
     </main>
 
