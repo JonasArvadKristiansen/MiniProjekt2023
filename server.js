@@ -92,17 +92,17 @@ app.get('/usersite', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', {auth: false});    
+    res.render('login', {auth: false, error: true});    
 });
 
 app.get('/createuser', (req, res) => {
-    res.render('createUser', {auth: false});
+    res.render('createUser', {auth: false, error: true});
 });
 
 app.get('/createrecipes', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
-        res.render('createRecipes', {auth: true});    
+        res.render('createRecipes', {auth: true , error: true});    
     }
 
     else
@@ -222,15 +222,17 @@ app.post('/createUser',(req,res) => {
                 con.query("INSERT INTO users (fullName, userPassword, email, isAdmin) VALUES (?, ?, ?, FALSE)", [
                     fullName, hashPassword, email
                 ]);
-                res.render('login', {auth: false});
+                res.render('login', {auth: false, error: true});    
             }
-
-            else
+            else {
                 console.log("passwords do not match");
+                res.render('createUser', {auth: false, error: true});
+            }
         }
-
-        else
+        else{
             console.log("Email already in use")
+            res.render('createUser', {auth: false, error: true});
+        }
     });
 });
 
@@ -264,7 +266,7 @@ app.post('/updateUser', (req, res) => {
                 res.clearCookie(process.env.SESS_NAME)
                 //removing session from database
 	            req.session.destroy();
-                res.render('login', {auth: false})
+                res.render('login', {auth: false, error: false});    
             });
         }
 
@@ -290,7 +292,7 @@ app.post('/deleteUser',(req, res) => {
     });
 });
 
-app.post('/createRecipe',(req,res) => { 
+app.post('/createRecipes',(req,res) => { 
     // variables for later use
     let userid = req.body.id
     let title = req.body.title;
@@ -303,7 +305,7 @@ app.post('/createRecipe',(req,res) => {
 
 });
 
-app.post('/updateRecipe', (req, res) => {
+app.post('/updateRecipes', (req, res) => {
     // variables for later use
     let title = req.body.title;
     let instructions = req.body.instructions;
@@ -315,7 +317,7 @@ app.post('/updateRecipe', (req, res) => {
 
 });
 
-app.post('/deleteRecipe' ,(req,res) => { 
+app.post('/deleteRecipes' ,(req,res) => { 
     
     // deleting from database
     con.query("", req.body , (err, data) => {

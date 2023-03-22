@@ -18,6 +18,10 @@
         <form action="/loginUser" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
             <h1>Login</h1>
 
+            <% if (error) { %>
+                <p class="error">Der er en fejl i de indtastet oplysninger</p>
+            <% } %>
+            
             <!-- Indsæt email -->
             <label for="email" class="form-label">Email address</label>
             <div class="input-group mb-3">
