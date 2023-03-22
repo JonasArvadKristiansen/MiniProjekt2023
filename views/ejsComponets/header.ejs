@@ -13,19 +13,19 @@
                     <a class="nav-link active" aria-current="page" href="/">Forside</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/aboutUs">Omkrign os</a>
+                    <a class="nav-link active" aria-current="page" href="/aboutUs">Omkring os</a>
                 </li>
             
                     <!-- Tjekker authentication  -->
-                <% if (true) { %>
+                <% if (auth) { %>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/usersite">jonas arvad kristiansen</a>
+                        <a class="nav-link active" aria-current="page" href="/usersite">Brugerside</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/createrecipes">Opret opskrift</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Logud</a>
+                        <a class="nav-link active" aria-current="page" href="/logout">Logud</a>
                     </li>
                 <% } else { %>
                     <li class="nav-item">
