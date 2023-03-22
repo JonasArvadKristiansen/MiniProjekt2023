@@ -21,7 +21,7 @@ personorstk VARCHAR(255) NOT NULL,
 totalAmount INT NOT NULL,
 dateCreated DATE NOT NULL,
 img LONGTEXT NOT NULL,
-FOREIGN KEY (userId) REFERENCES users(id)
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ingredients(
@@ -30,7 +30,7 @@ recipeId INT NOT NULL,
 ingredient VARCHAR(255) NOT NULL,
 measuringUnit VARCHAR(255) NOT NULL,
 amount INT NOT NULL,
-FOREIGN KEY (recipeId) REFERENCES recipes(id)
+FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE CASCADE
 );
 
 
@@ -40,6 +40,13 @@ recipeId INT NOT NULL,
 userId INT NOT NULL,
 userComment LONGTEXT NOT NULL,
 stars INT NOT NULL,
-FOREIGN KEY (recipeId) REFERENCES recipes(id),
-FOREIGN KEY (userId) REFERENCES users(id)
+FOREIGN KEY (recipeId) REFERENCES recipes(id) ON DELETE CASCADE,
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `session_id` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+  `expires` int(11) unsigned NOT NULL,
+  `data` mediumtext COLLATE utf8mb4_bin,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB
