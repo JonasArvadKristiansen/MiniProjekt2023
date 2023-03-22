@@ -28,3 +28,9 @@ main h1 {
 main span {
     font-family:'Bootstrap-icons';
 }
+
+main .error {
+    color:  rgb(196, 42, 42);
+    font-size: large;
+    font-weight: bold;
+}

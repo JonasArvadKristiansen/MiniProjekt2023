@@ -92,17 +92,17 @@ app.get('/usersite', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', {auth: false});    
+    res.render('login', {auth: false, error: true});    
 });
 
 app.get('/createuser', (req, res) => {
-    res.render('createUser', {auth: false});
+    res.render('createUser', {auth: false, error: true});
 });
 
 app.get('/createrecipes', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
-        res.render('createRecipes', {auth: true});    
+        res.render('createRecipes', {auth: true , error: true});    
     }
 
     else
@@ -222,16 +222,16 @@ app.post('/createUser',(req,res) => {
                 con.query("INSERT INTO users (fullName, userPassword, email, isAdmin) VALUES (?, ?, ?, FALSE)", [
                     fullName, hashPassword, email
                 ]);
-                res.render('login', {auth: false});
+                res.render('login', {auth: false, error: true});    
             }
             else {
                 console.log("passwords do not match");
-                res.render('createUser', {error: true});
+                res.render('createUser', {auth: false, error: true});
             }
         }
         else{
             console.log("Email already in use")
-            res.render('createUser', {error: true});
+            res.render('createUser', {auth: false, error: true});
         }
     });
 });
@@ -266,7 +266,7 @@ app.post('/updateUser', (req, res) => {
                 res.clearCookie(process.env.SESS_NAME)
                 //removing session from database
 	            req.session.destroy();
-                res.render('login', {auth: false})
+                res.render('login', {auth: false, error: false});    
             });
         }
 
