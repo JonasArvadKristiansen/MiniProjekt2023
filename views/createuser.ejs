@@ -4,7 +4,9 @@
     <!-- Henter head componet fra folderen af  -->
     <%- include('./ejsComponets/head') %>
     
-    <link rel="stylesheet" href="/css/pagesCss/userRegistration.css">
+    <link rel="stylesheet" href="/css/pagesCss/createUser.css">
+    <script src="/js/createUser.js" defer></script>
+
     <title>DFMB - Oprettelsen af bruger</title>
 </head>
 
@@ -17,10 +19,14 @@
     <main>
         <form action="/createUser" class="shadow p-3 mb-5 bg-body-tertiary rounded" method="post"> 
             <h1>Opret bruger</h1>
-            
+
+            <% if (error) { %>
+                <p class="error">Der er en fejl i de indtastet oplysninger</p>
+            <% } %>
+
             <!-- Indsæt fullNavn -->   
             <label for="fullNavn" class="form-label">Full navn *</label>
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 errorTest">
                 <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
                 <input id="fullNavn" type="text" class="form-control" name="fullNavn" placeholder="Full navn" required>
             </div>
@@ -45,7 +51,6 @@
                 <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
                 <input id="confirmPassword" type="password" class="form-control" name="confirmPassword" placeholder="Bekræft Adgangskode" required>
             </div>
-
             <button type="submit" class="btn btn-primary additional">Opret bruger</button>
             <a id="createUser" href="/login" class="btn btn-primary additional">Login</a>
         </form>

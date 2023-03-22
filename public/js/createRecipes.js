@@ -1,5 +1,7 @@
 // Når man ville oprette en ingrediens
 
+console.log('inside')
+
 // Værdier fra input
 const ingredientName = document.getElementById('ingredientName')
 const ingrediensMeasurements = document.getElementById('ingrediensMeasurements')
@@ -7,7 +9,7 @@ const ingredientUnit = document.getElementById('ingredientUnit')
 
 // List og button
 const ingredientList = document.getElementById('ingredientList')
-const createIngredient = document.getElementById('createIncredient')
+const createIncredient = document.getElementById('createIncredient')
 
 
 createIncredient.addEventListener('click', function () {

@@ -19,6 +19,10 @@
         <form class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
             <h1>Opret opskrift</h1>
             
+            <% if (error) { %>
+                <p class="error">Der er en fejl i de indtastet oplysninger</p>
+            <% } %>
+
             <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel *</label>
             <div class="input-group mb-3">
