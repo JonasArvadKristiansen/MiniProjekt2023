@@ -154,6 +154,14 @@ app.get('/recapie/:recapieID', (req, res) => {
     })
 });
 
+app.get('/editRecipes', (req, res) => {
+    if(typeof(req.session.userId) !=  "undefined") {
+        res.render('editRecipes', {auth: true, error: false})
+    } else {
+        res.render('editRecipes', {auth: true, error: false})
+    }
+})
+
 app.get('/', (req, res) => {
     con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
         if(typeof(req.session.userId) !=  "undefined") {
