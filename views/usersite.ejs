@@ -61,6 +61,7 @@
         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row2">
            <h1>Opretede opskrifter</h1>
            <% let i = 0 %>
+           <% if(norecipe == false) { %>
             <div class="row3">
                 <% data.forEach((op) => { %>
                     <% if (i == 3 ) { %>
@@ -84,6 +85,7 @@
                     </div>
                     <% i++; %>
                 <% }); %>
+            <% } %>
             </div>
         </div>
     </main>
