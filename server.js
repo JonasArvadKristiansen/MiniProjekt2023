@@ -72,8 +72,7 @@ app.get('/aboutus', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
         res.render('aboutUs', {auth: true});
-    }
-    else
+    } else
         res.render('aboutUs', {auth: false});
 });
 
@@ -83,9 +82,7 @@ app.get('/usersite', (req, res) => {
         con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
             res.render('usersite', {auth: true, data: data, error: false});
         });
-    }
-
-    else
+    } else
         res.render('index', {auth: false});
 	
 });
@@ -122,9 +119,6 @@ app.get('/recapie/:recapieID', (req, res) => {
             WHERE recipes.id = ?`
 
         con.query(query, [recapieId], (err, data) => {
-        if (err) {
-            console.log(err)
-        } else {
             // Henter kommentarende fra databasen
             const query = `SELECT comments.userComment, comments.stars, users.fullName
             FROM comments
@@ -149,8 +143,7 @@ app.get('/recapie/:recapieID', (req, res) => {
                         res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false});
                     }
                 }
-            })            
-        }
+            })
     })
 });
 
@@ -192,9 +185,7 @@ app.post('/loginUser',(req,res) => {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
                 res.render('index', {auth: true});
-            }
-            
-            else
+            } else
             { 
                 console.log("Wrong password to use");
             }
@@ -223,13 +214,11 @@ app.post('/createUser',(req,res) => {
                     fullName, hashPassword, email
                 ]);
                 res.render('login', {auth: false, error: true});    
-            }
-            else {
+            } else {
                 console.log("passwords do not match");
                 res.render('createUser', {auth: false, error: true});
             }
-        }
-        else{
+        } else {
             console.log("Email already in use")
             res.render('createUser', {auth: false, error: true});
         }
@@ -244,9 +233,7 @@ app.post('/updateUser', (req, res) => {
     if(oldPassword == newPassword)
     {
         console.log("Something?")
-    }
-
-    else
+    } else
     {
         con.query("SELECT userPassword, fullName, email FROM users WHERE id = ?", req.session.userId, (err, data) => {
     
@@ -263,16 +250,13 @@ app.post('/updateUser', (req, res) => {
 	            req.session.destroy();
                 res.render('login', {auth: false, error: false});    
             });
-        }
-
-        else
+        } else
         {
             con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", req.session.userId, (err, data) => {
                 res.render('usersite', {auth: true, data: data, error: true});
             });
         }
         }); 
-       
     }
 });
 
@@ -290,7 +274,27 @@ app.post('/deleteUser',(req, res) => {
 });
 
 app.post('/createRecipes',(req,res) => { 
-    res.redirect('/createRecipes')
+    // variables for later use
+    let title = req.body.title;
+    let instructions = req.body.instruktioner;
+    let personorstk = req.body.personOrStk;
+    let amount = req.body.measurements;
+    let dateCreated = Date.now();
+    let img = req.body.imgFile
+    let ingredientList = req.body.ingredientList;
+
+    con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+    [req.session.userId, title, instructions, personorstk, amount, img]
+    ,(err, data) => {
+                ingredientList.forEach(element => {
+                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                [data.insertId, element, element, element], (err, data) => {
+                    
+                })
+            
+            
+        });
+    });
 });
 
 app.post('/updateRecipes', (req, res) => {
@@ -301,7 +305,9 @@ app.post('/updateRecipes', (req, res) => {
     let amount = req.body.amount;
     let dateCreated = Date.now();
     
-    con.query(``);
+    con.query("", (err, data) => {
+
+    });
 
 });
 
@@ -309,8 +315,6 @@ app.post('/deleteRecipes' ,(req,res) => {
     
     // deleting from database
     con.query("", req.body , (err, data) => {
-        if(err)
-        { console.log("error: " + err) }
         res.render('usersite', {auth: true})
     });
 });
