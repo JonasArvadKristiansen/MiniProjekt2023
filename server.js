@@ -87,6 +87,7 @@ app.get('/aboutus', (req, res) => {
 });
 
 app.get('/usersite', (req, res) => {
+    //tjekking if user logged in. if not logged in then cant access site
     if(typeof(req.session.userId) !=  "undefined")
     {
         con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
@@ -124,7 +125,7 @@ app.get('/recapie/:recapieID', (req, res) => {
     const queryRecipe = 'recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.img'
     const queryIngredients = 'ingredients.ingredient, ingredients.measuringUnit, ingredients.amount'
 
-    // Henter opskrift, ingredienser og forfatter  fra databasen   
+    // Henter opskrift, ingredienser og forfatter fra databasen   
 	const query = ` SELECT ${queryRecipe}, users.fullName, ${queryIngredients}
             FROM recipes
             INNER JOIN users ON recipes.userId = users.id
@@ -256,9 +257,13 @@ app.post('/updateUser', (req, res) => {
     {
         con.query("SELECT userPassword, fullName, email FROM users WHERE id = ?", req.session.userId, (err, data) => {
     
+        //tjekking if they match
         let pwDBmatch = bcrypt.compareSync(oldPassword, data[0].userPassword)
+        
+        //if match bcrypt return true to pwDBmatch
         if(pwDBmatch)
         {
+            //hashing user password before going to db
             let newhashedpw = bcrypt.hashSync(newPassword, 10);
             con.query("UPDATE users SET userPassword = ? WHERE id = ?", 
                 [newhashedpw, req.session.userId], (err, data) => {
@@ -296,7 +301,10 @@ app.post('/deleteUser',(req, res) => {
 });
 
 app.post('/searchRecipes', (req, res) => {
+    // variables for later use
     let searchitem = "%" + req.body.search + "%"
+
+    //seeing after matching recipes in database
     con.query("SELECT * FROM recipes WHERE title like ? ORDER BY dateCreated DESC", searchitem, (err, data) => {
         if(typeof(req.session.userId) !=  "undefined") {
             res.render('index', {auth: true, data: data})
@@ -316,10 +324,13 @@ app.post('/createRecipes',(req,res) => {
     let ingrediensMeasurementList = req.body.ingrediensMeasurement;
     let ingrediensUnitList = req.body.ingrediensUnit;
     let ingrediensNameList = req.body.ingrediensName;
+    
+    //tjekking if ingrediensNameList is string or undefined
     if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
         con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
         [req.session.userId, title, instructions, personorstk, amount, img]
         ,(err, data) => { 
+            //inserting into database
             con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
             [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
                 if(err)
@@ -332,10 +343,12 @@ app.post('/createRecipes',(req,res) => {
             });
         });
     } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
+        //inserting into database
         con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
         [req.session.userId, title, instructions, personorstk, amount, img]
         ,(err, data) => {
             for (let i = 0; i < ingrediensNameList.length; i++) {
+                //inserting into database
                 con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
                 [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
                 if(err)
@@ -366,10 +379,13 @@ app.post('/updateRecipes', (req, res) => {
 });
 
 app.post('/deleteRecipes' ,(req,res) => { 
-    
-    // deleting from database
-    con.query("", req.body , (err, data) => {
-        res.render('usersite', {auth: true})
+    // deleting recipe from database
+    con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", req.body , (err, data) => {
+        if(err)
+        { console.log(err) }
+        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
+            res.render('usersite', {auth: true, data: data, error: false});
+        });
     });
 });
 
