@@ -20,6 +20,9 @@
 
             <form class=" p-3 mb-5 bg-body-tertiary" action="/updateUser" method="post">
                 <p>Email: <%- data[0].email %> </p>
+                <% if (error) { %>
+                    <p class="error">Der er en fejl i de indtastet oplysninger</p>
+                <% } %>
                 <label for="oldPassword">Gammel adgangskode</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-lock-fill"></i></span>
@@ -32,6 +35,12 @@
                     <input id="newPassword" type="text" class="form-control" name="newPassword" placeholder="Ny adgangskode">
                 </div>
                 <button type="submit" class="btn btn-primary additional additional">Opdatere password</button>
+            </form>
+        </div>
+
+        <div id="deleteUser" class="shadow p-3 mb-5 bg-body-tertiary rounded row">
+            <form class=" p-3 mb-5 bg-body-tertiary" action="/deleteUser" method="post"> 
+                <button type="submit" class="btn btn-primary additional additional">Slet din Konto</button>
             </form>
         </div>
 
@@ -48,18 +57,35 @@
                 <p><b>DFMB@outlook.dk</b></p>
             </div>
          </div>
-         
-         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row">
-            <form class=" p-3 mb-5 bg-body-tertiary" action="/deleteUser" method="post"> 
-                <button type="submit" class="btn btn-primary additional additional">Slet din Konto</button>
-            </form>
-        </div>
 
         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row2">
            <h1>Opretede opskrifter</h1>
-           <div>
-
-           </div>
+           <% let i = 0 %>
+            <div class="row3">
+                <% data.forEach((op) => { %>
+                    <% if (i == 3 ) { %>
+                        </div><div class="row3">
+                        <% i = 0 %>
+                    <% } %>
+                    <div class="shadow p-3 mb-5 bg-body-tertiary rounded colum3">
+                        <h4><%= op.title %></h4>
+                        <div class="img">
+                            <img src="<%= op.foodImg %>">
+                        </div>
+                        <div>
+                            <div>
+                                <form action="/changeRecapi" method="post">
+                                    <button type="/changeRecapi" class="btn btn-primary additional additional">Opdatere opskrift</button>
+                                </form>
+                                <form action="/deleteRecapi" method="post">
+                                    <button type="submit" class="btn btn-primary additional additional">Slet opskrift</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <% i++; %>
+                <% }); %>
+            </div>
         </div>
     </main>
 

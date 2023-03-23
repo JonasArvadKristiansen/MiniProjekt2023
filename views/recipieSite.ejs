@@ -75,17 +75,19 @@
                 <!-- Tilføjer kommentar og finder dem der er opretet på siden -->
                 <div class="colum">
                     <h4>Kommentar</h4>
-                    <form action="createComment" id="writeComment">
-                        <select name="starsSelected" >
-                            <option value="1" >&#xF586;</option>
-                            <option value="2" >&#xF586; &#xF586;</option>
-                            <option value="3" >&#xF586; &#xF586; &#xF586;</option>
-                            <option value="4" >&#xF586; &#xF586; &#xF586; &#xF586;</option>
-                            <option value="5" >&#xF586; &#xF586; &#xF586; &#xF586; &#xF586;</option>
-                        </select>
-                        <textarea class="form-control" name="kommentar" id="instruktioner" rows="3" placeholder="Skriv Kommentar" ></textarea>
-                        <button type="submit" class="btn btn-primary additional">Tilføj kommentar</button>
-                    </form>
+                    <% if (auth) { %>
+                        <form action="createComment" id="writeComment">
+                            <select name="starsSelected" >
+                                <option value="1" >&#xF586;</option>
+                                <option value="2" >&#xF586; &#xF586;</option>
+                                <option value="3" >&#xF586; &#xF586; &#xF586;</option>
+                                <option value="4" >&#xF586; &#xF586; &#xF586; &#xF586;</option>
+                                <option value="5" >&#xF586; &#xF586; &#xF586; &#xF586; &#xF586;</option>
+                            </select>
+                            <textarea class="form-control" name="kommentar" id="instruktioner" rows="3" placeholder="Skriv Kommentar" ></textarea>
+                            <button type="submit" class="btn btn-primary additional">Tilføj kommentar</button>
+                        </form>
+                    <% } %>
                     <div>
                         <% comments.forEach((com)=>{%>
                             <div class="users">
