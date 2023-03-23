@@ -61,6 +61,7 @@
         <div class="shadow p-3 mb-5 bg-body-tertiary rounded row2">
            <h1>Opretede opskrifter</h1>
            <% let i = 0 %>
+           <% if(norecipe == false) { %>
             <div class="row3">
                 <% data.forEach((op) => { %>
                     <% if (i == 3 ) { %>
@@ -70,7 +71,7 @@
                     <div class="shadow p-3 mb-5 bg-body-tertiary rounded colum3">
                         <h4><%= op.title %></h4>
                         <div class="img">
-                            <img src="<%= op.foodImg %>">
+                            <img src="<%= op.img %>">
                         </div>
                         <div>
                             <div>
@@ -86,6 +87,7 @@
                     </div>
                     <% i++; %>
                 <% }); %>
+            <% } %>
             </div>
         </div>
     </main>

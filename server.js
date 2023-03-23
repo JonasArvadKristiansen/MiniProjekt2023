@@ -91,7 +91,14 @@ app.get('/usersite', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
         con.query("SELECT users.fullName, users.email, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
-            res.render('usersite', {auth: true, data: data, error: false});
+            if(typeof(data[0]) == "undefined")
+            {
+                con.query("SELECT * FROM users WHERE id = ?", req.session.userId, (err, data) =>{
+                    res.render('usersite', {auth: true, data: data, error: false, norecipe: true});
+                });
+            } else {
+                res.render('usersite', {auth: true, data: data, error: false, norecipe: false});    
+            }
         });
     } else
         con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {
@@ -160,7 +167,7 @@ app.get('/recapie/:recapieID', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {
         if(typeof(req.session.userId) !=  "undefined") {
             res.render('index', {auth: true, data: data})
         } else {
@@ -324,42 +331,47 @@ app.post('/createRecipes',(req,res) => {
     let ingrediensUnitList = req.body.ingrediensUnit;
     let ingrediensNameList = req.body.ingrediensName;
     
-    //tjekking if ingrediensNameList is string or undefined
-    if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
-        con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-        [req.session.userId, title, instructions, personorstk, amount, img]
-        ,(err, data) => { 
-            //inserting into database
-            con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-            [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
-                if(err)
-                { 
-                    console.log(err); 
-                }
-            });
-            con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-                res.render('index', {auth: true, data: data})
-            });
-        });
-    } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
-        //inserting into database
-        con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-        [req.session.userId, title, instructions, personorstk, amount, img]
-        ,(err, data) => {
-            for (let i = 0; i < ingrediensNameList.length; i++) {
+    if(!img.includes("png") && !img.includes("jpg"))
+    {
+        res.render('createRecipes', {auth: true, error: true})
+    } else {
+        //tjekking if ingrediensNameList is string or undefined
+        if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
+            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+            [req.session.userId, title, instructions, personorstk, amount, img]
+            ,(err, data) => { 
                 //inserting into database
                 con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
-                if(err)
-                { console.log(err); }
+                [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
+                    if(err)
+                    { 
+                        console.log(err); 
+                    }
                 });
-            }
-            con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-                res.render('index', {auth: true, data: data})
+                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+                    res.render('index', {auth: true, data: data})
+                });
             });
-        });
-    } else {
-        res.render('createrecipes', {auth: true, error: true})
+        } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
+            //inserting into database
+            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+            [req.session.userId, title, instructions, personorstk, amount, img]
+            ,(err, data) => {
+                for (let i = 0; i < ingrediensNameList.length; i++) {
+                    //inserting into database
+                    con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                    [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                    if(err)
+                    { console.log(err); }
+                    });
+                }
+                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+                    res.render('index', {auth: true, data: data})
+                });
+            });
+        } else {
+            res.render('createRecipes', {auth: true, error: true})
+        }
     }
 });
 
