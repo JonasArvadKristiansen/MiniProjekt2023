@@ -72,10 +72,6 @@ main .colum3 div {
     justify-content: space-evenly;
 }
 
-main .colum3 form button {
-    padding: 0%;
-}
-
 main .colum3 form:nth-child(2) button {
     background-color: rgb(182, 44, 44);
     border-color: rgb(109, 24, 24);
@@ -85,7 +81,6 @@ main .colum3 form {
     margin-left: 2%;
     margin-right: 2%;
 }
-
 
 main .colum3 .img {
     display: flex;

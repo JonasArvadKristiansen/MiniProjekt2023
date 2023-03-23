@@ -73,17 +73,14 @@
                         <div class="img">
                             <img src="<%= op.img %>">
                         </div>
-                        <div>
-                            <div>
-                                <form action="/changeRecapi" method="post">
-                                    <a href="/editRecipes">wew</a>
-                                    <button type="/changeRecapi" class="btn btn-primary additional additional">Opdatere opskrift</button>
-                                </form>
-                                <form action="/deleteRecipes" method="post">
-                                    <input id="recipieId" name="recipieId" type="hidden" value="<%= op.id %>">
-                                    <button type="submit" class="btn btn-primary additional additional">Slet opskrift</button>
-                                </form>
-                            </div>
+                        <div class="recapies">
+                            <a href="/editRecapi/<%= op.id %>">
+                                <button type="submit" class="btn btn-primary additional additional">Opdatere opskrift</button>
+                            </a>
+                            <form action="/deleteRecipes" method="post">
+                                <input id="recipieId" name="recipieId" type="hidden" value="<%= op.id %>">
+                                <button type="submit" class="btn btn-primary additional">Slet</button>
+                            </form>
                         </div>
                     </div>
                     <% i++; %>
