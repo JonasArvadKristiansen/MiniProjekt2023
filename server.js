@@ -88,8 +88,7 @@ app.get('/aboutus', (req, res) => {
 
 app.get('/usersite', (req, res) => {
     //tjekking if user logged in. if not logged in then cant access site
-    if(typeof(req.session.userId) !=  "undefined")
-    {
+    if(typeof(req.session.userId) !=  "undefined") {
         con.query("SELECT users.fullName, users.email, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
             res.render('usersite', {auth: true, data: data, error: false});
         });
@@ -108,16 +107,16 @@ app.get('/createuser', (req, res) => {
 });
 
 app.get('/createrecipes', (req, res) => {
-    if(typeof(req.session.userId) !=  "undefined")
-    {
+    if(typeof(req.session.userId) !=  "undefined") {
         res.render('createRecipes', {auth: true , error: false});    
-    } else
-    {
+    } else{
         con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
             res.render('index', {auth: false, data: data})
         });
     }
 });
+
+
 
 // Lavet af Jesper
 app.get('/recapie/:recapieID', (req, res) => {
@@ -127,39 +126,45 @@ app.get('/recapie/:recapieID', (req, res) => {
 
     // Henter opskrift, ingredienser og forfatter fra databasen   
 	const query = ` SELECT ${queryRecipe}, users.fullName, ${queryIngredients}
-            FROM recipes
-            INNER JOIN users ON recipes.userId = users.id
-            INNER JOIN ingredients ON recipes.id = ingredients.recipeId
-            WHERE recipes.id = ?`
+    FROM recipes
+    INNER JOIN users ON recipes.userId = users.id
+    INNER JOIN ingredients ON recipes.id = ingredients.recipeId
+    WHERE recipes.id = ?`
 
-        con.query(query, [recapieId], (err, data) => {
-            // Henter kommentarende fra databasen
-            const query = `SELECT comments.userComment, comments.stars, users.fullName
-            FROM comments
-            INNER JOIN users ON comments.userId = users.id 
-            WHERE comments.recipeId = ?`
+    con.query(query, [recapieId], (err, data) => {
+        // Henter kommentarende fra databasen
+        const query = `SELECT comments.userComment, comments.stars, users.fullName
+        FROM comments
+        INNER JOIN users ON comments.userId = users.id 
+        WHERE comments.recipeId = ?`
 
-            con.query(query, [recapieId], (err, comments) => {
-                if (err) {
-                    console.log(err)
+        con.query(query, [recapieId], (err, comments) => {
+            if (err) {
+                console.log(err)
+            } else {
+                let date = data[0].dateCreated 
+                date = (new Date(date)).toISOString().slice(0,10)
+
+                if(typeof(req.session.userId) != "undefined"){
+                    // Går til siden og sender data man kan bruger på frontenden
+                    res.render('recipieSite', {data: data[0], isAdmin: req.session.isAdmin, array: data, date: date, comments: comments, auth: true, recapieId: recapieId});
                 } else {
-                    let date = data[0].dateCreated 
-                    date = (new Date(date)).toISOString().slice(0,10)
-
-                    if(typeof(req.session.userId) !=  "undefined")
-                    {
-                        // Går til siden og sender data man kan bruger på frontenden
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true, recapieId: recapieId});
-                    } else
-                    {
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false, recapieId: recapieId});
-                    }
+                    res.render('recipieSite', {data: data[0], isAdmin: false, array: data, date: date, comments: comments, auth: false, recapieId: recapieId});
                 }
-            })
+            }
+        })
     })
 });
 
-app.get('/editRecipes', (req, res) => {
+app.get('/editRecapi/:recapieID', (req, res) => {
+    const recapieId = req.params.recapieID
+
+    //qury if it's form the user with session id
+
+    //if yes give it infor ann continue the rediret
+
+    //else gå til forsiden 
+
     if(typeof(req.session.userId) !=  "undefined") {
         res.render('editRecipes', {auth: true, error: false})
     } else {
@@ -205,7 +210,9 @@ app.post('/loginUser',(req,res) => {
             {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
+                req.session.isAdmin = data[0].isAdmin
                 con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+                    
                     res.render('index', {auth: true, data: data})
             });
             } else {

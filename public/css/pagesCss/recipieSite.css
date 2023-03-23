@@ -104,3 +104,13 @@ main .users p {
 main #stars {
     margin-left: 3%;
 }
+
+main .delteButton {
+    background-color: rgb(202, 66, 66);
+    border-color: rgb(109, 24, 24);
+}
+
+main .delteButton:hover {
+    background-color: rgb(182, 44, 44);
+    border-color: rgb(109, 24, 24);
+}

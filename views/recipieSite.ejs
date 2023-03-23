@@ -39,7 +39,7 @@
                 <!-- colum 2 -->
                 <!-- Får billedet af maden -->
                 <div class="colum">
-                    <img src="<%= data.foodImg %>">
+                    <img src="<%= data.img %>">
                 </div>
             </div>
 
@@ -110,6 +110,11 @@
                                 </div>
                             </div>
                             <textarea class="form-control" id="instruktioner" rows="2" disabled><%= com.userComment %></textarea>
+                            <%  if (isAdmin) { %>
+                                <form action="#" method="post">
+                                    <button type="button" class="btn btn-primary additional delteButton">Slet</button>
+                                </form>
+                            <% } %>
                         <%})%>
                     </div>
                 </div>
