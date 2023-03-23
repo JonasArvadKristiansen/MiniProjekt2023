@@ -86,7 +86,9 @@ app.get('/usersite', (req, res) => {
     }
 
     else
-        res.render('index', {auth: false});
+        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+            res.render('index', {auth: false, data: data})
+    });
 	
 });
 
@@ -105,13 +107,17 @@ app.get('/createrecipes', (req, res) => {
     }
 
     else
-        res.render('index', {auth: false});
+    {
+        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+            res.render('index', {auth: false, data: data})
+        });
+    }
 });
 
 // Lavet af Jesper
 app.get('/recapie/:recapieID', (req, res) => {
     const recapieId = req.params.recapieID
-    const queryRecipe = 'recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.foodImg'
+    const queryRecipe = 'recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.img'
     const queryIngredients = 'ingredients.ingredient, ingredients.measuringUnit, ingredients.amount'
 
     // Henter opskrift, ingredienser og forfatter  fra databasen   
@@ -169,12 +175,13 @@ app.get('/logout', (req, res) => {
     res.clearCookie(process.env.SESS_NAME)
     //removing session from database
 	req.session.destroy();
-	res.render('index', {auth: false});
+    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+            res.render('index', {auth: false, data: data})
+    });
 });
 
 // endpoints for post request
 app.post('/loginUser',(req,res) => {
-
     // variables for later use
     let email = req.body.email
     let password = req.body.password
@@ -182,7 +189,7 @@ app.post('/loginUser',(req,res) => {
     //select * from database mathing the parameter 
 	con.query("SELECT * FROM users WHERE email = ?", email, (err, data) => {
         if(data.length != 0)
-        {   
+        {
             // tjekking if typed password match hashed password from database
             let pwCheck = bcrypt.compareSync(password, data[0].userPassword)
             
@@ -191,13 +198,15 @@ app.post('/loginUser',(req,res) => {
             {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
-                res.render('index', {auth: true});
+                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+                    res.render('index', {auth: true, data: data})
+            });
+            } else {
+                res.render('login', {auth: false, data: data, error: true})
             }
-            
-            else
-            { 
-                console.log("Wrong password to use");
-            }
+        } else {
+            res.render('login', {auth: false, data: data, error: true})
+            console.log("No user found");
         }
     });
 });
@@ -222,7 +231,7 @@ app.post('/createUser',(req,res) => {
                 con.query("INSERT INTO users (fullName, userPassword, email, isAdmin) VALUES (?, ?, ?, FALSE)", [
                     fullName, hashPassword, email
                 ]);
-                res.render('login', {auth: false, error: true});    
+                res.render('login', {auth: false, error: false});    
             }
             else {
                 console.log("passwords do not match");
@@ -243,7 +252,10 @@ app.post('/updateUser', (req, res) => {
 
     if(oldPassword == newPassword)
     {
-        console.log("Something?")
+        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", 
+            req.session.userId, (err, data) => {
+            res.render('usersite', {auth: true, data: data, error: true});
+        });
     }
 
     else
@@ -267,7 +279,8 @@ app.post('/updateUser', (req, res) => {
 
         else
         {
-            con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", req.session.userId, (err, data) => {
+            con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", 
+            req.session.userId, (err, data) => {
                 res.render('usersite', {auth: true, data: data, error: true});
             });
         }
@@ -285,12 +298,41 @@ app.post('/deleteUser',(req, res) => {
         res.clearCookie(process.env.SESS_NAME)
         //removing session from database
 	    req.session.destroy();
-        res.render('index', {auth: false})
+        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+            res.render('index', {auth: false, data: data})
+    });
     });
 });
 
 app.post('/createRecipes',(req,res) => { 
-    res.redirect('/createRecipes')
+    // variables for later use
+    console.log(req.body)
+    let title = req.body.title;
+    let instructions = req.body.instruktioner;
+    let personorstk = req.body.personOrStk;
+    let amount = req.body.measurements;
+    let img = req.body.imgFile
+    let ingrediensMeasurementList = req.body.ingrediensMeasurement;
+    let ingrediensUnitList = req.body.ingrediensUnit;
+    let ingrediensNameList = req.body.ingrediensName;
+
+    if(typeof(ingrediensNameList) && typeof(ingrediensNameList) && typeof(ingrediensNameList) !=  "undefined")
+    {
+        con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+        [req.session.userId, title, instructions, personorstk, amount, img]
+        ,(err, data) => {
+            for (let i = 0; i < ingrediensNameList.length; i++) {
+                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                
+                if(err)
+                { console.log(err); }
+                });
+            }
+        });
+    } else {
+        res.render('createrecipes', {auth: true, error: true})
+    }
 });
 
 app.post('/updateRecipes', (req, res) => {
