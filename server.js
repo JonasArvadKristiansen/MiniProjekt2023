@@ -301,22 +301,30 @@ app.post('/createRecipes',(req,res) => {
     let instructions = req.body.instruktioner;
     let personorstk = req.body.personOrStk;
     let amount = req.body.measurements;
-    let dateCreated = Date.now();
     let img = req.body.imgFile
-    let ingredientList = req.body.ingredientList;
+    let ingrediensMeasurementList = req.body.ingrediensMeasurement;
+    let ingrediensUnitList = req.body.ingrediensUnit;
+    let ingrediensNameList = req.body.ingrediensName;
 
-    con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-    [req.session.userId, title, instructions, personorstk, amount, img]
-    ,(err, data) => {
-                ingredientList.forEach(element => {
+    if(typeof(ingrediensNameList) != "string" && typeof(ingrediensNameList) != "undefined")
+    {
+        con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+        [req.session.userId, title, instructions, personorstk, amount, img]
+        ,(err, data) => {
+            for (let i = 0; i < ingrediensNameList.length; i++) {
                 con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                [data.insertId, element, element, element], (err, data) => {
-                    
-                })
-            
-            
+                [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                if(err)
+                { console.log(err); }
+                });
+            }
+            con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+                res.render('index', {auth: true, data: data})
+            });
         });
-    });
+    } else {
+        res.render('createrecipes', {auth: true, error: true})
+    }
 });
 
 app.post('/updateRecipes', (req, res) => {
