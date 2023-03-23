@@ -90,11 +90,11 @@ app.get('/usersite', (req, res) => {
     //tjekking if user logged in. if not logged in then cant access site
     if(typeof(req.session.userId) !=  "undefined")
     {
-        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
+        con.query("SELECT users.fullName, users.email, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
             res.render('usersite', {auth: true, data: data, error: false});
         });
     } else
-        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
+        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {
             res.render('index', {auth: false, data: data})
     });
 });
@@ -122,7 +122,7 @@ app.get('/createrecipes', (req, res) => {
 // Lavet af Jesper
 app.get('/recapie/:recapieID', (req, res) => {
     const recapieId = req.params.recapieID
-    const queryRecipe = 'recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.img'
+    const queryRecipe = 'recipes.id, recipes.title, recipes.instructions, recipes.personorstk, recipes.totalAmount, recipes.dateCreated, recipes.img'
     const queryIngredients = 'ingredients.ingredient, ingredients.measuringUnit, ingredients.amount'
 
     // Henter opskrift, ingredienser og forfatter fra databasen   
@@ -149,10 +149,10 @@ app.get('/recapie/:recapieID', (req, res) => {
                     if(typeof(req.session.userId) !=  "undefined")
                     {
                         // Går til siden og sender data man kan bruger på frontenden
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true});
+                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: true, recapieId: recapieId});
                     } else
                     {
-                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false});
+                        res.render('recipieSite', {data: data[0], array: data, date: date, comments: comments, auth: false, recapieId: recapieId});
                     }
                 }
             })
@@ -253,8 +253,7 @@ app.post('/updateUser', (req, res) => {
             req.session.userId, (err, data) => {
             res.render('usersite', {auth: true, data: data, error: true});
         });
-    } else
-    {
+    } else {
         con.query("SELECT userPassword, fullName, email FROM users WHERE id = ?", req.session.userId, (err, data) => {
     
         //tjekking if they match
@@ -380,7 +379,7 @@ app.post('/updateRecipes', (req, res) => {
 
 app.post('/deleteRecipes' ,(req,res) => { 
     // deleting recipe from database
-    con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", req.body , (err, data) => {
+    con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", [req.body.recipieId, req.session.userId] , (err, data) => {
         if(err)
         { console.log(err) }
         con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
@@ -391,17 +390,18 @@ app.post('/deleteRecipes' ,(req,res) => {
 
 app.post('/createComment' ,(req,res) => {
     // variables for later use
-    let recipeId = req.body.recipeId
+    let recipeId = req.body.recipieId
     let userid = req.session.userId
-    let userComment = req.body.userComment
-    let stars = req.body.stars
+    let userComment = req.body.kommentar
+    let stars = req.body.starsSelected
 
     // inserting into database
     con.query("INSERT INTO comments(recipeId, userId, userComment, stars) VALUES (?, ?, ?, ?)",
      [ recipeId, userid, userComment, stars ], (err, data) => {
         if(err)
         { console.log("error: " + err) }
-        res.render('usersite', {auth: true})
+        //reloading site
+        res.redirect(`/recapie/${recipeId}`)
     });
 });
 

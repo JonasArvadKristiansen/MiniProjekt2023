@@ -76,7 +76,8 @@
                 <div class="colum">
                     <h4>Kommentar</h4>
                     <% if (auth) { %>
-                        <form action="createComment" id="writeComment">
+                        <form action="/createComment" id="writeComment" method="post">
+                            <input id="recipieId" name="recipieId" type="hidden" value="<%= recapieId %>">
                             <select name="starsSelected" >
                                 <option value="1" >&#xF586;</option>
                                 <option value="2" >&#xF586; &#xF586;</option>
