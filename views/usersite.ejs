@@ -78,7 +78,8 @@
                                     <a href="/editRecipes">wew</a>
                                     <button type="/changeRecapi" class="btn btn-primary additional additional">Opdatere opskrift</button>
                                 </form>
-                                <form action="/deleteRecapi" method="post">
+                                <form action="/deleteRecipes" method="post">
+                                    <input id="recipieId" name="recipieId" type="hidden" value="<%= op.id %>">
                                     <button type="submit" class="btn btn-primary additional additional">Slet opskrift</button>
                                 </form>
                             </div>

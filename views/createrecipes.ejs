@@ -17,6 +17,7 @@
 
     <main>
         <form action="/createRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+
             <h1>Opret opskrift</h1>
             
             <% if (error) { %>
@@ -24,9 +25,9 @@
             <% } %>
 
             <!-- Indsæt tittel -->       
-            <label for="tittel" class="form-label">Tittel *</label>
+            <label for="titel" class="form-label">Titel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" class="form-control" placeholder="Tittel" required>
+                <input id="titel" type="text" name="title" class="form-control" placeholder="Titel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
