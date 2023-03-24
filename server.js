@@ -6,9 +6,11 @@ const session = require('express-session')
 const bcrypt = require("bcrypt")
 const app = express();
 const mysqlStore = require('express-mysql-session')(session);
+const fileUpload = require('express-fileupload');
 
+//setting path to where to find css, js and img for our server
 app.use(express.static(__dirname + '/public'));
-
+  
 // telling the backend we are using ejs files
 app.set('view engine', 'ejs');
 
@@ -16,6 +18,8 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+//npm module for uploading images
+app.use(fileUpload());
 
 // creating connection to database using values from .env
 const con = mysql.createConnection({
@@ -285,8 +289,7 @@ app.post('/updateUser', (req, res) => {
 	            req.session.destroy();
                 res.render('login', {auth: false, error: false});    
             });
-        } else
-        {
+        } else {
             con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ?", 
             req.session.userId, (err, data) => {
                 res.render('usersite', {auth: true, data: data, error: true});
@@ -323,18 +326,25 @@ app.post('/searchRecipes', (req, res) => {
     });
 });
 
-app.post('/createRecipes',(req,res) => { 
+app.post('/createRecipes' ,(req,res) => { 
     // variables for later use
     let title = req.body.title;
     let instructions = req.body.instruktioner;
     let personorstk = req.body.personOrStk;
     let amount = req.body.measurements;
-    let img = req.body.imgFile
+    let img = "/img/recapiesImg/" + req.files.imgFile.name
+    let typeImg = req.files.imgFile.mimetype
     let ingrediensMeasurementList = req.body.ingrediensMeasurement;
     let ingrediensUnitList = req.body.ingrediensUnit;
     let ingrediensNameList = req.body.ingrediensName;
-    
-    if(!img.includes("png") && !img.includes("jpg"))
+    //setting the file to varible
+    let imgToUpload = req.files.imgFile;
+    //path to put image in
+    let uploadPath = __dirname + '/public/img/recapiesImg/' + img.name;    
+    const array_of_allowed_files = ['png', 'jpg'];
+
+    //tjekking if not contains any of the file types
+    if(!typeImg.includes(array_of_allowed_files[0]) && !typeImg.includes(array_of_allowed_files[1]))
     {
         res.render('createRecipes', {auth: true, error: true})
     } else {
@@ -342,14 +352,19 @@ app.post('/createRecipes',(req,res) => {
         if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
             con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
             [req.session.userId, title, instructions, personorstk, amount, img]
-            ,(err, data) => { 
+            ,(err, data) => {
+                if(err) { console.log(err) }
+
+                //using built in function mv to upload to folder on pc or server
+                imgToUpload.mv(uploadPath);
+
                 //inserting into database
                 con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
                 [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
                     if(err)
-                    { 
+                    {
                         console.log(err); 
-                    }
+                    }    
                 });
                 res.redirect("/")
             });
@@ -358,6 +373,9 @@ app.post('/createRecipes',(req,res) => {
             con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
             [req.session.userId, title, instructions, personorstk, amount, img]
             ,(err, data) => {
+                //using built in function mv to upload to folder on pc or server
+                imgToUpload.mv(uploadPath);
+
                 for (let i = 0; i < ingrediensNameList.length; i++) {
                     //inserting into database
                     con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
@@ -430,10 +448,7 @@ app.post('/deleteRecipes' ,(req,res) => {
     con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", [req.body.recipieId, req.session.userId] , (err, data) => {
         if(err)
         { console.log(err) }
-        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", 
-        req.session.userId, (err, data) => {
-            res.render('usersite', {auth: true, data: data, error: false});
-        });
+        res.redirect('/usersite')
     });
 });
 
@@ -443,9 +458,9 @@ app.post('/createComment' ,(req,res) => {
     let userid = req.session.userId
     let userComment = req.body.kommentar
     let stars = req.body.starsSelected
-
     let date = new Date();
-
+    
+    //made by jesper
     let dateString =
     date.getFullYear() +
     "-" +
@@ -458,7 +473,8 @@ app.post('/createComment' ,(req,res) => {
     date.getMinutes().toString().padStart(2, "0") +
     ":" +
     date.getSeconds().toString().padStart(2, "0");
-
+    
+    //made by jonas
     // inserting into database
     con.query("INSERT INTO comments(recipeId, userId, userComment, stars, commentDate) VALUES (?, ?, ?, ?, ?)",
      [ recipeId, userid, userComment, stars, dateString], (err, data) => {
