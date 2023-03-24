@@ -143,7 +143,7 @@ app.get('/recapie/:recapieID', (req, res) => {
         const query = `SELECT comments.id, comments.userComment, comments.stars, users.fullName
         FROM comments
         INNER JOIN users ON comments.userId = users.id 
-        WHERE comments.recipeId = ?`
+        WHERE comments.recipeId = ? ORDER BY comments.commentDate DESC `
 
         con.query(query, [recapieId], (err, comments) => {
             if (err) {
@@ -423,9 +423,24 @@ app.post('/createComment' ,(req,res) => {
     let userComment = req.body.kommentar
     let stars = req.body.starsSelected
 
+    let date = new Date();
+
+    let dateString =
+    date.getFullYear() +
+    "-" +
+    (date.getMonth() + 1).toString().padStart(2, "0") +
+    "-" +
+    date.getDate().toString().padStart(2, "0") +
+    " " +
+    date.getHours().toString().padStart(2, "0") +
+    ":" +
+    date.getMinutes().toString().padStart(2, "0") +
+    ":" +
+    date.getSeconds().toString().padStart(2, "0");
+
     // inserting into database
-    con.query("INSERT INTO comments(recipeId, userId, userComment, stars) VALUES (?, ?, ?, ?)",
-     [ recipeId, userid, userComment, stars ], (err, data) => {
+    con.query("INSERT INTO comments(recipeId, userId, userComment, stars, commentDate) VALUES (?, ?, ?, ?, ?)",
+     [ recipeId, userid, userComment, stars, dateString], (err, data) => {
         if(err)
         { console.log("error: " + err) }
         //reloading site
