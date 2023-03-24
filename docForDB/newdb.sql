@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `userId` int NOT NULL,
   `userComment` longtext NOT NULL,
   `stars` int NOT NULL,
+  `commentDate` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
   KEY `recipeId` (`recipeId`),
   KEY `userId` (`userId`),
