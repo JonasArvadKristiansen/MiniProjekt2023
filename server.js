@@ -140,7 +140,7 @@ app.get('/recapie/:recapieID', (req, res) => {
 
     con.query(query, [recapieId], (err, data) => {
         // Henter kommentarende fra databasen
-        const query = `SELECT comments.userComment, comments.stars, users.fullName
+        const query = `SELECT comments.id, comments.userComment, comments.stars, users.fullName
         FROM comments
         INNER JOIN users ON comments.userId = users.id 
         WHERE comments.recipeId = ?`
@@ -409,7 +409,8 @@ app.post('/deleteRecipes' ,(req,res) => {
     con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", [req.body.recipieId, req.session.userId] , (err, data) => {
         if(err)
         { console.log(err) }
-        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", req.session.userId, (err, data) => {
+        con.query("SELECT users.fullName, users.email, users.id, recipes.* FROM users INNER JOIN recipes ON recipes.userId = users.id WHERE users.id = ? ORDER BY recipes.dateCreated DESC", 
+        req.session.userId, (err, data) => {
             res.render('usersite', {auth: true, data: data, error: false});
         });
     });
@@ -434,12 +435,13 @@ app.post('/createComment' ,(req,res) => {
 
 app.post('/deleteComment' ,(req,res) => {
     // variables for later use
-    let commentid = req.body.id
-
+    let commentId = req.body.commentId
+    let recapieID = req.body.recapieId
     // deleting from database
-    con.query("DELETE FROM comments WHERE id = ?", commentid, (err, data) => {
+    con.query("DELETE FROM comments WHERE id = ?", commentId, (err, data) => {
         if(err)
         { console.log("error: " + err) }
+        res.redirect(`/recapie/${recapieID}`)
     });
 });
 
