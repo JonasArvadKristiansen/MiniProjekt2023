@@ -7,6 +7,8 @@ const bcrypt = require("bcrypt")
 const app = express();
 const mysqlStore = require('express-mysql-session')(session);
 const fileUpload = require('express-fileupload');
+// also known as Node.js File System (fs) module
+const fs = require('fs'); 
 
 //setting path to where to find css, js and img for our server
 app.use(express.static(__dirname + '/public'));
@@ -340,7 +342,7 @@ app.post('/createRecipes' ,(req,res) => {
     //setting the file to varible
     let imgToUpload = req.files.imgFile;
     //path to put image in
-    let uploadPath = __dirname + '/public/img/recapiesImg/' + img.name;    
+    let uploadPath = __dirname + '/public/img/recapiesImg/' + imgToUpload.name;    
     const array_of_allowed_files = ['png', 'jpg'];
 
     //tjekking if not contains any of the file types
@@ -445,10 +447,13 @@ app.post('/updateRecipes', (req, res) => {
 
 app.post('/deleteRecipes' ,(req,res) => { 
     // deleting recipe from database
-    con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", [req.body.recipieId, req.session.userId] , (err, data) => {
-        if(err)
-        { console.log(err) }
-        res.redirect('/usersite')
+    con.query("SELECT img FROM recipes WHERE id = ?", req.body.recipieId, (err, data) => {
+        fs.unlinkSync(__dirname + "/public" + data[0].img)
+        con.query("DELETE FROM recipes WHERE id = ? AND userId = ?", [req.body.recipieId, req.session.userId] , (err, data) => {
+            if(err)
+            { console.log(err) }
+            res.redirect('/usersite')
+        }); 
     });
 });
 
