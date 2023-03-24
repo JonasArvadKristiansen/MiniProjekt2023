@@ -1,11 +1,16 @@
 // node_modules for website to work
 const express = require('express');
+//for using .env in nodejs
 require("dotenv").config();
 const mysql = require('mysql2');
+//for using session in server
 const session = require('express-session')
+//for hashing passwords
 const bcrypt = require("bcrypt")
 const app = express();
+//npm package to connection to database 
 const mysqlStore = require('express-mysql-session')(session);
+// for uploading files to folder
 const fileUpload = require('express-fileupload');
 // also known as Node.js File System (fs) module
 const fs = require('fs'); 
@@ -189,6 +194,7 @@ app.get('/editRecapi/:recapieID', (req, res) => {
     
     const recapieId = req.params.recapieID
     con.query("SELECT recipes.*, ingredients.* from recipes INNER JOIN ingredients ON recipes.id = ingredients.recipeId WHERE recipes.id = ?", recapieId, (err, data) => {
+        console.log(data)
         if(data[0].userId == req.session.userId && typeof(req.session.userId) !=  "undefined")
         {
             res.render("editRecipes", {data: data, auth: true, error: false})

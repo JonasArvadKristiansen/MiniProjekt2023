@@ -5,8 +5,8 @@
     <%- include('./ejsComponets/head') %>
     
     <link rel="stylesheet" href="/css/pagesCss/createRecipes.css">
-    <script src="/js/createRecipes.js" defer></script>
-    <title>DFMB - Opret opskrift</title>
+    <script src="/js/editRecipes.js" defer></script>
+    <title>DFMB - Opdatere opskrift</title>
 </head>
 
 <body>
@@ -17,7 +17,8 @@
 
     <main>
         <form action="/updateRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
-            <h1>Opret opskrift</h1>
+            <input type="hidden" name="urlId" value="<%= data[0].recipeId %>">
+            <h1>Opdatere opskrift</h1>
             
             <% if (error) { %>
                 <p class="error">Der er en fejl i de indtastet oplysninger</p>
@@ -26,22 +27,23 @@
             <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" value="<% data[0].title %>" class="form-control" placeholder="Tittel" required>
+                <input id="editTittel" type="text" name="title" value="<%= data[0].title %>" class="form-control" placeholder="Tittel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
             <div class="mb-3">
                 <label for="instruktioner" class="form-label">Instruktioner *</label>
-                <textarea class="form-control" id="instruktioner" value="<% data[0].instructions %> name="instruktioner" rows="3" placeholder="Instruktioner" required></textarea>
+                <textarea class="form-control" id="editInstruktioner" name="instruktioner" rows="3" placeholder="Instruktioner" required><%= data[0].instructions %></textarea>
             </div>
 
             <!-- Indsæt ingredienser -->       
             <div class="mb-3">
                 <label class="form-label">Opret ingrediens</label>
-                <input id="ingredientName" type="text" class="form-control" placeholder="Navn på ingrediensen">
+                <input id="editIngredientName" type="text" class="form-control" placeholder="Navn på ingrediensen">
                 <div class="input-group mb-3">
-                    <input id="ingrediensMeasurements" type="number" class="form-control" placeholder="Mængde">
-                    <select id="ingredientUnit" class="form-select">
+                    <input id="editIngrediensMeasurements" type="number" class="form-control" placeholder="Mængde">
+                    <select id="editIngredientUnit" class="form-select">
+                        <option>stk</option>
                         <option>kilo</option>
                         <option>gram</option>
                         <option>liter</option>
@@ -50,18 +52,27 @@
                         <option>teskefuld</option>
                         <option>spiseskefuld </option>
                     </select>          
-                    <button type="button" id="createIncredient" class="btn btn-primary additional">Tilføj ingrediensen</button>
+                    <button type="button" id="editCreateIncredient" class="btn btn-primary additional">Tilføj ingrediensen</button>
                 </div>
 
-                <label class="form-label">Ingrediens list (mindst en)*</label>
-                <div id="ingredientList"></div>
+                <label class="form-label">Ingrediens list (mindst to) *</label>
+                <div id="editIngredientList">
+                    <% data.forEach((el)=>{%>
+                        <div class="mb-3 ingredientItem">
+                            <input type="text" class="form-control no-touch" name="ingrediensMeasurement" value="<%= el.amount %>" readonly>
+                            <input type="text" class="form-control no-touch" name="ingrediensUnit" value="<%= el.measuringUnit %>" readonly>
+                            <input type="text" class="form-control no-touch" name="ingrediensName" value="<%= el.ingredient %>" readonly>                            
+                            <button type="button" onclick="DeleteParent(this)" class="btn btn-danger">Slet</button>
+                        </div> 
+                    <%});%>
+                </div>
             </div>
 
             <!-- Vælg mellem Person eller Stk -->       
             <label for="personOrStk" class="form-label">Person eller Stk *</label>
             <div class="input-group mb-3">
-                <select id="personOrStk" name="personOrStk" class="form-select">
-                    <option value="<% data[0].personorstk %>" ></option>
+                <select id="editPersonOrStk" name="personOrStk" class="form-select">
+                    <option disabled selected> <%= data[0].personorstk %> </option>
                     <option>Person</option>
                     <option>Stk</option>
                 </select>                
@@ -70,15 +81,15 @@
             <!-- Indsæt Mængde -->       
             <label for="measurements" class="form-label">Mængde *</label>
             <div class="input-group mb-3">
-                <input id="measurements" type="number" min="1" max="100" class="form-control" value="<% data[0].totalAmount %>" name="measurements" placeholder="Mængde til personer eller stk" required >
+                <input id="editMeasurements" type="number" min="1" max="100" class="form-control" value="<%= data[0].totalAmount %>" name="measurements" placeholder="Mængde til personer eller stk" required >
             </div>
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
-                <label for="imgFile" class="form-label">Vælg et billed til opskriften *</label>
-                <input class="form-control" type="file" accept="image/*" value="<% data[0].img %>" id="imgFile" name="imgFile" required>
+                <label for="imgFile" class="form-label">Bruger det orginale hvis du ikke vælger</label>
+                <input class="form-control" type="file" accept="image/*" id="editImgFile" name="imgFile">
             </div>
-            <button type="submit" id="createIncredient" class="btn btn-primary additional">Opdatere opskriften</button>
+            <button type="submit" id="editCreateIncredient" class="btn btn-primary additional">Opdatere opskriften</button>
         </form>
     </main>
 
