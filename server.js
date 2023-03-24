@@ -1,12 +1,19 @@
 // node_modules for website to work
 const express = require('express');
+//for using .env in nodejs
 require("dotenv").config();
 const mysql = require('mysql2');
+//for using session in server
 const session = require('express-session')
+//for hashing passwords
 const bcrypt = require("bcrypt")
 const app = express();
+//npm package to connection to database 
 const mysqlStore = require('express-mysql-session')(session);
+// for uploading files to folder
 const fileUpload = require('express-fileupload');
+//to delete files in folder
+const fs = require('fs');
 
 //setting path to where to find css, js and img for our server
 app.use(express.static(__dirname + '/public'));

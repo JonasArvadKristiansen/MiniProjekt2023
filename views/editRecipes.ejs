@@ -5,7 +5,6 @@
     <%- include('./ejsComponets/head') %>
     
     <link rel="stylesheet" href="/css/pagesCss/createRecipes.css">
-    <script src="/js/createRecipes.js" defer></script>
     <title>DFMB - Opret opskrift</title>
 </head>
 
@@ -26,13 +25,13 @@
             <!-- Indsæt tittel -->       
             <label for="tittel" class="form-label">Tittel *</label>
             <div class="input-group mb-3">
-                <input id="tittel" type="text" name="title" value="<% data[0].title %>" class="form-control" placeholder="Tittel" required>
+                <input id="tittel" type="text" name="title" value="<%= data[0].title %>" class="form-control" placeholder="Tittel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
             <div class="mb-3">
                 <label for="instruktioner" class="form-label">Instruktioner *</label>
-                <textarea class="form-control" id="instruktioner" value="<% data[0].instructions %> name="instruktioner" rows="3" placeholder="Instruktioner" required></textarea>
+                <textarea class="form-control" id="instruktioner" name="instruktioner" rows="3" placeholder="Instruktioner" required><%= data[0].instructions %></textarea>
             </div>
 
             <!-- Indsæt ingredienser -->       
@@ -61,7 +60,7 @@
             <label for="personOrStk" class="form-label">Person eller Stk *</label>
             <div class="input-group mb-3">
                 <select id="personOrStk" name="personOrStk" class="form-select">
-                    <option value="<% data[0].personorstk %>" ></option>
+                    <option disabled selected> <%= data[0].personorstk %> </option>
                     <option>Person</option>
                     <option>Stk</option>
                 </select>                
@@ -70,13 +69,13 @@
             <!-- Indsæt Mængde -->       
             <label for="measurements" class="form-label">Mængde *</label>
             <div class="input-group mb-3">
-                <input id="measurements" type="number" min="1" max="100" class="form-control" value="<% data[0].totalAmount %>" name="measurements" placeholder="Mængde til personer eller stk" required >
+                <input id="measurements" type="number" min="1" max="100" class="form-control" value="<%= data[0].totalAmount %>" name="measurements" placeholder="Mængde til personer eller stk" required >
             </div>
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
                 <label for="imgFile" class="form-label">Vælg et billed til opskriften *</label>
-                <input class="form-control" type="file" accept="image/*" value="<% data[0].img %>" id="imgFile" name="imgFile" required>
+                <input class="form-control" type="file" accept="image/*" id="imgFile" name="imgFile" required>
             </div>
             <button type="submit" id="createIncredient" class="btn btn-primary additional">Opdatere opskriften</button>
         </form>
