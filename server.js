@@ -194,7 +194,6 @@ app.get('/editRecapi/:recapieID', (req, res) => {
     
     const recapieId = req.params.recapieID
     con.query("SELECT recipes.*, ingredients.* from recipes INNER JOIN ingredients ON recipes.id = ingredients.recipeId WHERE recipes.id = ?", recapieId, (err, data) => {
-        console.log(data)
         if(data[0].userId == req.session.userId && typeof(req.session.userId) !=  "undefined")
         {
             res.render("editRecipes", {data: data, auth: true, error: false})
@@ -401,52 +400,78 @@ app.post('/createRecipes' ,(req,res) => {
 });
 
 app.post('/updateRecipes', (req, res) => {
-    // variables for later use
-    let title = req.body.title;
-    let instructions = req.body.instruktioner;
-    let personorstk = req.body.personOrStk;
-    let amount = req.body.measurements;
-    let img = req.body.imgFile
-    let ingrediensMeasurementList = req.body.ingrediensMeasurement;
-    let ingrediensUnitList = req.body.ingrediensUnit;
-    let ingrediensNameList = req.body.ingrediensName;
-    
-    if(!img.includes("png") && !img.includes("jpg"))
+    // variables for recapie
+    let recapieId = req.body.urlId
+    let title = req.body.title
+    let instructions = req.body.instruktioner
+    let personorstk = req.body.personOrStk
+    let amount = req.body.measurements
+    let img = "/img/recapiesImg/" + req.files.imgFile.name
+    let typeImg = req.files.imgFile.mimetype
+
+    // varibles for ingrediens
+    let ingrediensMeasurementList = req.body.editIngrediensMeasurements;
+    let ingrediensUnitList = req.body.editIngredientUnit;
+    let ingrediensNameList = req.body.editIngredientName;
+
+    //setting the file to varible
+    let imgToUpload = req.files.imgFile;
+    //path to put image in
+    let uploadPath = __dirname + '/public/img/recapiesImg/' + imgToUpload.name;
+    const array_of_allowed_files = ['png', 'jpg'];
+
+    //tjekking if not contains any of the file types
+    if(!typeImg.includes(array_of_allowed_files[0]) && !typeImg.includes(array_of_allowed_files[1]))
     {
-        res.render('editRecipes', {auth: true, error: true})
+        res.redirect(`/recapie/${recipeId}`)
     } else {
+        con.query("SELECT img FROM recipes WHERE id = ?", recapieId, (err, data) =>{
+            fs.unlinkSync(__dirname + "/public" + data[0].img)
+        });
+
         //tjekking if ingrediensNameList is string or undefined
         if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
-            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-            [req.session.userId, title, instructions, personorstk, amount, img]
-            ,(err, data) => { 
+            con.query("UPDATE recipes SET title = ?, instructions = ?, personorstk = ?, totalAmount = ?, img = ? WHERE id = ?",
+            [title, instructions, personorstk, amount, img, recapieId]
+            ,(err, data) => {
+                if(err) { console.log(err) }
+                //using built in function mv to upload to folder on pc or server
+                imgToUpload.mv(uploadPath);
+                con.query("DELETE FROM ingredients WHERE recipeId = ?", recapieId, (err, data) => {
+                
                 //inserting into database
-                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
+                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)",
+                [recapieId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
                     if(err)
-                    { 
-                        console.log(err); 
-                    }
+                    { console.log(err); }
                 });
-                res.redirect("/")
+                res.redirect('/usersite')
+                });
             });
         } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
-            //inserting into database
-            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-            [req.session.userId, title, instructions, personorstk, amount, img]
+            //updating in database
+            con.query("UPDATE recipes SET title = ?, instructions = ?, personorstk = ?, totalAmount = ?, img = ? WHERE id = ?",
+            [title, instructions, personorstk, amount, img, recapieId]
             ,(err, data) => {
+                if(err) { console.log(err) }
+
+                //using built in function mv to upload to folder on pc or server
+                imgToUpload.mv(uploadPath);
+                
+                con.query("DELETE FROM ingredients WHERE recipeId = ?", recapieId, (err, data) => { });
+
                 for (let i = 0; i < ingrediensNameList.length; i++) {
                     //inserting into database
                     con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                    [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                    [recapieId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
                     if(err)
                     { console.log(err); }
                     });
                 }
-                res.redirect("/")
+                res.redirect('/usersite')
             });
         } else {
-            res.render('createRecipes', {auth: true, error: true})
+            res.redirect(`/recapie/${recipeId}`)
         }
     }
 });

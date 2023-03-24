@@ -16,7 +16,7 @@
     </header>
 
     <main>
-        <form action="/updateRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
+        <form action="/updateRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded" encType="multipart/form-data"> 
             <input type="hidden" name="urlId" value="<%= data[0].recipeId %>">
             <h1>Opdatere opskrift</h1>
             
@@ -59,9 +59,9 @@
                 <div id="editIngredientList">
                     <% data.forEach((el)=>{%>
                         <div class="mb-3 ingredientItem">
-                            <input type="text" class="form-control no-touch" name="ingrediensMeasurement" value="<%= el.amount %>" readonly>
-                            <input type="text" class="form-control no-touch" name="ingrediensUnit" value="<%= el.measuringUnit %>" readonly>
-                            <input type="text" class="form-control no-touch" name="ingrediensName" value="<%= el.ingredient %>" readonly>                            
+                            <input type="text" class="form-control no-touch" name="editIngrediensMeasurements" value="<%= el.amount %>" readonly>
+                            <input type="text" class="form-control no-touch" name="editIngredientUnit" value="<%= el.measuringUnit %>" readonly>
+                            <input type="text" class="form-control no-touch" name="editIngredientName" value="<%= el.ingredient %>" readonly>                            
                             <button type="button" onclick="DeleteParent(this)" class="btn btn-danger">Slet</button>
                         </div> 
                     <%});%>
@@ -72,10 +72,10 @@
             <label for="personOrStk" class="form-label">Person eller Stk *</label>
             <div class="input-group mb-3">
                 <select id="editPersonOrStk" name="personOrStk" class="form-select">
-                    <option disabled selected> <%= data[0].personorstk %> </option>
+                    <option selected readonly> <%= data[0].personorstk %> </option>
                     <option>Person</option>
                     <option>Stk</option>
-                </select>                
+                </select>
             </div>
 
             <!-- Indsæt Mængde -->       
@@ -86,8 +86,8 @@
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
-                <label for="imgFile" class="form-label">Bruger det orginale hvis du ikke vælger</label>
-                <input class="form-control" type="file" accept="image/*" id="editImgFile" name="imgFile">
+                <label for="imgFile" class="form-label">Skal vælge et billede</label>
+                <input class="form-control" type="file" accept="image/*" id="editImgFile" name="imgFile" required>
             </div>
             <button type="submit" id="editCreateIncredient" class="btn btn-primary additional">Opdatere opskriften</button>
         </form>
