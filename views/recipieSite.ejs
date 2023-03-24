@@ -111,8 +111,10 @@
                             </div>
                             <textarea class="form-control" id="instruktioner" rows="2" disabled><%= com.userComment %></textarea>
                             <%  if (isAdmin) { %>
-                                <form action="#" method="post">
-                                    <button type="button" class="btn btn-primary additional delteButton">Slet</button>
+                                <form action="/deleteComment" method="post">
+                                    <input id="recapieId" name="recapieId" type="hidden" value="<%= recapieId %>">
+                                    <input id="commentId" name="commentId" type="hidden" value="<%= com.id %>">
+                                    <button type="submit" class="btn btn-primary additional delteButton">Slet</button>
                                 </form>
                             <% } %>
                         <%})%>
