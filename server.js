@@ -194,6 +194,7 @@ app.get('/editRecapi/:recapieID', (req, res) => {
     
     const recapieId = req.params.recapieID
     con.query("SELECT recipes.*, ingredients.* from recipes INNER JOIN ingredients ON recipes.id = ingredients.recipeId WHERE recipes.id = ?", recapieId, (err, data) => {
+        console.log(data)
         if(data[0].userId == req.session.userId && typeof(req.session.userId) !=  "undefined")
         {
             res.render("editRecipes", {data: data, auth: true, error: false})
