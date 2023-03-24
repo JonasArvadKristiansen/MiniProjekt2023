@@ -9,8 +9,12 @@ const ingredientUnit = document.getElementById('editIngredientUnit')
 let ingredientList = document.getElementById('editIngredientList')
 const createIncredient = document.getElementById('editCreateIncredient')
 
+
+
+
+
 //Opret en ingrediens til ingredienslisten
-createIncredient.addEventListener('click', function() {
+createIncredient.addEventListener('click', function() {    
     //cheker om nogen af dem er tomme
     let create = true
     const ingrediensArray = [ingrediensMeasurements.value, ingredientUnit.value, ingredientName.value ]

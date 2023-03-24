@@ -6,7 +6,7 @@
     
     <link rel="stylesheet" href="/css/pagesCss/createRecipes.css">
     <script src="/js/editRecipes.js" defer></script>
-    <title>DFMB - Opret opskrift</title>
+    <title>DFMB - Opdatere opskrift</title>
 </head>
 
 <body>
@@ -18,7 +18,7 @@
     <main>
         <form action="/updateRecipes" method="post" onsubmit="SaveData()" class="shadow p-3 mb-5 bg-body-tertiary rounded"> 
             <input type="hidden" name="urlId" value="<%= data[0].recipeId %>">
-            <h1>Opret opskrift</h1>
+            <h1>Opdatere opskrift</h1>
             
             <% if (error) { %>
                 <p class="error">Der er en fejl i de indtastet oplysninger</p>
@@ -52,10 +52,10 @@
                         <option>teskefuld</option>
                         <option>spiseskefuld </option>
                     </select>          
-                    <button type="button" id="createIncredient" class="btn btn-primary additional">Tilføj ingrediensen</button>
+                    <button type="button" id="editCreateIncredient" class="btn btn-primary additional">Tilføj ingrediensen</button>
                 </div>
 
-                <label class="form-label">Ingrediens list (mindst en)*</label>
+                <label class="form-label">Ingrediens list (mindst to) *</label>
                 <div id="editIngredientList">
                     <% data.forEach((el)=>{%>
                         <div class="mb-3 ingredientItem">
