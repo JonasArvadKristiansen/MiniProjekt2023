@@ -44,7 +44,7 @@ const options = {
     // Whether or not to automatically check for and clear expired sessions:
     clearExpired: true,
 	// How frequently expired sessions will be cleared; milliseconds:
-	checkExpirationInterval: 1000 * 60,
+	checkExpirationInterval: 1000 * 60 * 60,
 	// The maximum age of a valid session; milliseconds:
 	expiration: 1000 * 60 * 60 * 2,
     createDatabaseTable: false
@@ -78,6 +78,32 @@ app.use(session({
 }));
 
 // get endpoints for ejs files
+app.get('/', (req, res) => {
+    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {
+        if(typeof(req.session.userId) !=  "undefined") {
+            res.render('index', {auth: true, data: data})
+        } else {
+            res.render('index', {auth: false, data: data})
+        }
+    });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login', {auth: false, error: false});    
+});
+
+app.get('/createuser', (req, res) => {
+    res.render('createUser', {auth: false, error: false});
+});
+
+app.get('/logout', (req, res) => {
+    //removing cookie from browser
+    res.clearCookie(process.env.SESS_NAME)
+    //removing session from database
+	req.session.destroy();
+    res.redirect("/")
+});
+
 app.get('/aboutus', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined")
     {
@@ -105,14 +131,6 @@ app.get('/usersite', (req, res) => {
     });
 });
 
-app.get('/login', (req, res) => {
-    res.render('login', {auth: false, error: false});    
-});
-
-app.get('/createuser', (req, res) => {
-    res.render('createUser', {auth: false, error: false});
-});
-
 app.get('/createrecipes', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined") {
         res.render('createRecipes', {auth: true , error: false});    
@@ -122,8 +140,6 @@ app.get('/createrecipes', (req, res) => {
         });
     }
 });
-
-
 
 // Lavet af Jesper
 app.get('/recapie/:recapieID', (req, res) => {
@@ -164,38 +180,15 @@ app.get('/recapie/:recapieID', (req, res) => {
 });
 
 app.get('/editRecapi/:recapieID', (req, res) => {
+    
     const recapieId = req.params.recapieID
-
-    //qury if it's form the user with session id
-
-    //if yes give it infor ann continue the rediret
-
-    //else gå til forsiden 
-
-    if(typeof(req.session.userId) !=  "undefined") {
-        res.render('editRecipes', {auth: true, error: false})
-    } else {
-        res.render('editRecipes', {auth: true, error: false})
-    }
-})
-
-app.get('/', (req, res) => {
-    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {
-        if(typeof(req.session.userId) !=  "undefined") {
-            res.render('index', {auth: true, data: data})
+    con.query("SELECT recipes.*, ingredients.* from recipes INNER JOIN ingredients ON recipes.id = ingredients.recipeId WHERE recipes.id = ?", recapieId, (err, data) => {
+        if(data[0].userId == req.session.userId && typeof(req.session.userId) !=  "undefined")
+        {
+            res.render("editRecipes", {data: data[0], auth: true, error: false})
         } else {
-            res.render('index', {auth: false, data: data})
+            res.redirect("/")
         }
-    });
-});
-
-app.get('/logout', (req, res) => {
-    //removing cookie from browser
-    res.clearCookie(process.env.SESS_NAME)
-    //removing session from database
-	req.session.destroy();
-    con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-            res.render('index', {auth: false, data: data})
     });
 });
 
@@ -218,10 +211,7 @@ app.post('/loginUser',(req,res) => {
                 //setting a userId variable in session for later use
                 req.session.userId = data[0].id
                 req.session.isAdmin = data[0].isAdmin
-                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-                    
-                    res.render('index', {auth: true, data: data})
-            });
+                res.redirect("/")
             } else {
                 res.render('login', {auth: false, data: data, error: true})
             }
@@ -315,9 +305,7 @@ app.post('/deleteUser',(req, res) => {
         res.clearCookie(process.env.SESS_NAME)
         //removing session from database
 	    req.session.destroy();
-        con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-            res.render('index', {auth: false, data: data})
-    });
+        res.redirect("/")
     });
 });
 
@@ -363,9 +351,7 @@ app.post('/createRecipes',(req,res) => {
                         console.log(err); 
                     }
                 });
-                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-                    res.render('index', {auth: true, data: data})
-                });
+                res.redirect("/")
             });
         } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
             //inserting into database
@@ -380,9 +366,7 @@ app.post('/createRecipes',(req,res) => {
                     { console.log(err); }
                     });
                 }
-                con.query("SELECT * FROM recipes ORDER BY dateCreated DESC", (err, data) => {     
-                    res.render('index', {auth: true, data: data})
-                });
+                res.redirect("/")
             });
         } else {
             res.render('createRecipes', {auth: true, error: true})
@@ -393,15 +377,52 @@ app.post('/createRecipes',(req,res) => {
 app.post('/updateRecipes', (req, res) => {
     // variables for later use
     let title = req.body.title;
-    let instructions = req.body.instructions;
-    let personorstk = req.body.personorstk;
-    let amount = req.body.amount;
-    let dateCreated = Date.now();
+    let instructions = req.body.instruktioner;
+    let personorstk = req.body.personOrStk;
+    let amount = req.body.measurements;
+    let img = req.body.imgFile
+    let ingrediensMeasurementList = req.body.ingrediensMeasurement;
+    let ingrediensUnitList = req.body.ingrediensUnit;
+    let ingrediensNameList = req.body.ingrediensName;
     
-    con.query("", (err, data) => {
-
-    });
-
+    if(!img.includes("png") && !img.includes("jpg"))
+    {
+        res.render('editRecipes', {auth: true, error: true})
+    } else {
+        //tjekking if ingrediensNameList is string or undefined
+        if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
+            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+            [req.session.userId, title, instructions, personorstk, amount, img]
+            ,(err, data) => { 
+                //inserting into database
+                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
+                    if(err)
+                    { 
+                        console.log(err); 
+                    }
+                });
+                res.redirect("/")
+            });
+        } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
+            //inserting into database
+            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+            [req.session.userId, title, instructions, personorstk, amount, img]
+            ,(err, data) => {
+                for (let i = 0; i < ingrediensNameList.length; i++) {
+                    //inserting into database
+                    con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                    [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                    if(err)
+                    { console.log(err); }
+                    });
+                }
+                res.redirect("/")
+            });
+        } else {
+            res.render('createRecipes', {auth: true, error: true})
+        }
+    }
 });
 
 app.post('/deleteRecipes' ,(req,res) => { 
