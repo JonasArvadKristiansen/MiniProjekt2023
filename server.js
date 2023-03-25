@@ -142,7 +142,7 @@ app.get('/usersite', (req, res) => {
     });
 });
 
-app.get('/createrecipes', (req, res) => {
+app.get('/createRecipes', (req, res) => {
     if(typeof(req.session.userId) !=  "undefined") {
         res.render('createRecipes', {auth: true , error: false});    
     } else{
