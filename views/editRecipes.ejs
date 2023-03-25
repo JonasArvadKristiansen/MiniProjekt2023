@@ -25,9 +25,9 @@
             <% } %>
 
             <!-- Indsæt tittel -->       
-            <label for="tittel" class="form-label">Tittel *</label>
+            <label for="tittel" class="form-label">Titel *</label>
             <div class="input-group mb-3">
-                <input id="editTittel" type="text" name="title" value="<%= data[0].title %>" class="form-control" placeholder="Tittel" required>
+                <input id="editTittel" type="text" name="title" value="<%= data[0].title %>" class="form-control" placeholder="Titel" required>
             </div>
 
             <!-- Indsæt instruktioner -->              
@@ -86,8 +86,8 @@
 
             <!-- Indsæt et billed -->       
             <div class="mb-3">
-                <label for="imgFile" class="form-label">Skal vælge et billede</label>
-                <input class="form-control" type="file" accept="image/*" id="editImgFile" name="imgFile" required>
+                <label for="imgFile" class="form-label">Hvis intet valgt, så tager den det gamle billede</label>
+                <input class="form-control" type="file" accept="image/*" id="editImgFile" name="imgFile">
             </div>
             <button type="submit" id="editCreateIncredient" class="btn btn-primary additional">Opdatere opskriften</button>
         </form>
