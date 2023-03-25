@@ -339,7 +339,7 @@ app.post('/createRecipes' ,(req,res) => {
     let instructions = req.body.instruktioner;
     let personorstk = req.body.personOrStk;
     let amount = req.body.measurements;
-    let img = "/img/recapiesImg/" + req.files.imgFile.name
+    let img = "/img/recapiesImg/" + Date.now() + req.files.imgFile.name
     let typeImg = req.files.imgFile.mimetype
     let ingrediensMeasurementList = req.body.ingrediensMeasurement;
     let ingrediensUnitList = req.body.ingrediensUnit;
@@ -347,16 +347,17 @@ app.post('/createRecipes' ,(req,res) => {
     //setting the file to varible
     let imgToUpload = req.files.imgFile;
     //path to put image in
-    let uploadPath = __dirname + '/public/img/recapiesImg/' + imgToUpload.name;    
+    let uploadPath = __dirname + '/public/img/recapiesImg/' + Date.now() + imgToUpload.name;    
     const array_of_allowed_files = ['png', 'jpg'];
 
     //tjekking if not contains any of the file types
     if(!typeImg.includes(array_of_allowed_files[0]) && !typeImg.includes(array_of_allowed_files[1]))
     {
         res.render('createRecipes', {auth: true, error: true})
+    } else if(typeof(ingrediensNameList) == "undefined") {
+        res.render('createRecipes', {auth: true, error: true})
     } else {
-        //tjekking if ingrediensNameList is string or undefined
-        if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
+            //tjekking if ingrediensNameList is string or undefined
             con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
             [req.session.userId, title, instructions, personorstk, amount, img]
             ,(err, data) => {
@@ -365,38 +366,29 @@ app.post('/createRecipes' ,(req,res) => {
                 //using built in function mv to upload to folder on pc or server
                 imgToUpload.mv(uploadPath);
 
-                //inserting into database
-                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
-                    if(err)
-                    {
-                        console.log(err); 
-                    }    
-                });
-                res.redirect("/")
-            });
-        } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
-            //inserting into database
-            con.query("INSERT INTO recipes(userId, title, instructions, personorstk, totalAmount, dateCreated, img) VALUES (?, ?, ?, ?, ?, NOW(), ?)",
-            [req.session.userId, title, instructions, personorstk, amount, img]
-            ,(err, data) => {
-                //using built in function mv to upload to folder on pc or server
-                imgToUpload.mv(uploadPath);
-
-                for (let i = 0; i < ingrediensNameList.length; i++) {
+                if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
                     //inserting into database
                     con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                    [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
-                    if(err)
-                    { console.log(err); }
+                    [data.insertId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, ingredients) => {
+                        if(err)
+                        {
+                            console.log(err); 
+                        }    
                     });
+                    res.redirect(`/recapie/${data.insertId}`)
+                } else {
+                    for (let i = 0; i < ingrediensNameList.length; i++) {
+                        //inserting into database
+                        con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                        [data.insertId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                        if(err)
+                        { console.log(err); }
+                        });
+                    }
+                    res.redirect(`/recapie/${data.insertId}`)
                 }
-                res.redirect("/")
             });
-        } else {
-            res.render('createRecipes', {auth: true, error: true})
         }
-    }
 });
 
 app.post('/updateRecipes', (req, res) => {
@@ -406,73 +398,83 @@ app.post('/updateRecipes', (req, res) => {
     let instructions = req.body.instruktioner
     let personorstk = req.body.personOrStk
     let amount = req.body.measurements
-    let img = "/img/recapiesImg/" + req.files.imgFile.name
-    let typeImg = req.files.imgFile.mimetype
 
     // varibles for ingrediens
     let ingrediensMeasurementList = req.body.editIngrediensMeasurements;
     let ingrediensUnitList = req.body.editIngredientUnit;
     let ingrediensNameList = req.body.editIngredientName;
-
-    //setting the file to varible
-    let imgToUpload = req.files.imgFile;
+    
+    //image variables
+    //setting the varible to hold file
+    let newimage = false;
+    let imgToUpload;
     //path to put image in
-    let uploadPath = __dirname + '/public/img/recapiesImg/' + imgToUpload.name;
+    let uploadPath;
+    let img;
+    let typeImg = "samepic.png"
     const array_of_allowed_files = ['png', 'jpg'];
+    
+    if(req.files != null)
+    {
+        newimage = true
+        //setting the file to varible
+        imgToUpload = req.files.imgFile;
+        //path to put image in
+        uploadPath = __dirname + '/public/img/recapiesImg/' + Date.now() + imgToUpload.name;
+        img = "/img/recapiesImg/" + Date.now() + req.files.imgFile.name
+        typeImg = req.files.imgFile.mimetype    
+    }
 
     //tjekking if not contains any of the file types
     if(!typeImg.includes(array_of_allowed_files[0]) && !typeImg.includes(array_of_allowed_files[1]))
     {
         res.redirect(`/recapie/${recipeId}`)
-    } else {
-        con.query("SELECT img FROM recipes WHERE id = ?", recapieId, (err, data) =>{
-            fs.unlinkSync(__dirname + "/public" + data[0].img)
-        });
-
-        //tjekking if ingrediensNameList is string or undefined
-        if(typeof(ingrediensNameList) == "string" && typeof(ingrediensNameList) != "undefined") {
-            con.query("UPDATE recipes SET title = ?, instructions = ?, personorstk = ?, totalAmount = ?, img = ? WHERE id = ?",
-            [title, instructions, personorstk, amount, img, recapieId]
-            ,(err, data) => {
-                if(err) { console.log(err) }
-                //using built in function mv to upload to folder on pc or server
-                imgToUpload.mv(uploadPath);
-                con.query("DELETE FROM ingredients WHERE recipeId = ?", recapieId, (err, data) => {
-                
-                //inserting into database
-                con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)",
-                [recapieId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
-                    if(err)
-                    { console.log(err); }
-                });
-                res.redirect('/usersite')
-                });
-            });
-        } else if(typeof(ingrediensNameList) != "undefined" && typeof(ingrediensNameList) != "string") {
-            //updating in database
-            con.query("UPDATE recipes SET title = ?, instructions = ?, personorstk = ?, totalAmount = ?, img = ? WHERE id = ?",
-            [title, instructions, personorstk, amount, img, recapieId]
-            ,(err, data) => {
-                if(err) { console.log(err) }
-
-                //using built in function mv to upload to folder on pc or server
-                imgToUpload.mv(uploadPath);
-                
-                con.query("DELETE FROM ingredients WHERE recipeId = ?", recapieId, (err, data) => { });
-
-                for (let i = 0; i < ingrediensNameList.length; i++) {
-                    //inserting into database
-                    con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
-                    [recapieId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
-                    if(err)
-                    { console.log(err); }
-                    });
-                }
-                res.redirect('/usersite')
-            });
-        } else {
+    } else if(typeof(ingrediensNameList) == "undefined"){
             res.redirect(`/recapie/${recipeId}`)
-        }
+    } else {
+        con.query("SELECT img FROM recipes WHERE id = ?", recapieId, (err, data) => {
+            if(newimage)
+            {
+                fs.unlinkSync(__dirname + "/public" + data[0].img)
+            } else {
+                img = data[0].img
+            }
+            con.query("UPDATE recipes SET title = ?, instructions = ?, personorstk = ?, totalAmount = ?, img = ? WHERE id = ?",
+            [title, instructions, personorstk, amount, img, recapieId]
+            ,(err, data) => {
+                if(err) { console.log(err) }
+                
+                if(newimage)
+                {
+                    //using built in function mv to upload to folder on pc or server
+                    imgToUpload.mv(uploadPath);
+                }
+
+                con.query("DELETE FROM ingredients WHERE recipeId = ?", recapieId)
+             
+                if(typeof(ingrediensNameList) == "string") {
+                    //inserting into database
+                    con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)",
+                    [recapieId, ingrediensNameList, ingrediensUnitList, ingrediensMeasurementList], (err, data) => {
+                        if(err)
+                        { console.log(err); }
+                    });
+                    res.redirect('/usersite')
+
+                } else {
+                    //updating in database
+                    for (let i = 0; i < ingrediensNameList.length; i++) {
+                        //inserting into database
+                        con.query("INSERT INTO ingredients(recipeId, ingredient, measuringUnit, amount) VALUES(?, ?, ?, ?)", 
+                        [recapieId, ingrediensNameList[i], ingrediensUnitList[i], ingrediensMeasurementList[i]], (err, data) => {
+                        if(err)
+                        { console.log(err); }
+                        });
+                    }
+                    res.redirect('/usersite')
+                }
+            });
+        });
     }
 });
 
