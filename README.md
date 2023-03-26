@@ -5,6 +5,7 @@ Then you need to create .env file for project.
 Then you need to copy all inside .env.example and paste into .env
 Then set the values for connection to your mysql database
 eks.
+
 DB_HOST = 'localhost'
 DB_USER = 'root'
 DB_PASS = '' (only if you have made one yourself. default is empty in heidisql)
