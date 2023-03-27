@@ -81,9 +81,11 @@ let inputs = form.querySelectorAll("input, textarea, select ")
 
 // finder ingredienserne der gemt i session
 const divContent = sessionStorage.getItem("divContent");
-ingredientList.innerHTML = divContent;
-ingredientList.appendChild(ingredientList)
 
+if (divContent.length > 1) {
+    ingredientList.innerHTML = divContent;
+    ingredientList.appendChild(ingredientList)
+}
 
 // Henter informaiton i session og giver input felterne value
 inputs.forEach(el => {
